@@ -14,7 +14,7 @@ description: A new Flutter project.
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -25,6 +25,16 @@ dependencies:
   cupertino_icons: ^0.1.2
 
   provider: ^3.0.0
+
+  # Adding http package
+  http: ^0.12.0+2
+
+  # Adding shared preference
+  flutter_keychain: ^1.0.0
+
+  # Toast and Floating menu packages
+  fluttertoast: ^3.1.0
+  fab_menu: ^0.0.2
 
 dev_dependencies:
   flutter_test:
@@ -72,3 +82,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+
+  assets:
+    - assets/images/Motorcity_Logo.png
+    - assets/images/in-progress.png
+    - assets/images/new.png

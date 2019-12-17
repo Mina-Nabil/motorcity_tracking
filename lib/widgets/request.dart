@@ -3,7 +3,7 @@ import 'package:motorcity_tracking/models/truckrequest.dart';
 import 'package:flutter/material.dart';
 
 class RequestItem extends StatelessWidget {
-  TruckRequest req;
+  final TruckRequest req;
 
   RequestItem(this.req);
 
@@ -12,7 +12,7 @@ class RequestItem extends StatelessWidget {
     // TODO: implement build
     return Card(
         margin: const EdgeInsets.all(5),
-        color: (req.status == '1') ? Colors.green[100] : Colors.white,
+        color: (req.status == '1') ? Colors.green[100] : Colors.blue[50],
         child: FlatButton(
             onPressed: () =>
                 Navigator.of(context).pushReplacementNamed("routeName"),
@@ -24,8 +24,8 @@ class RequestItem extends StatelessWidget {
                   flex: 2,
                   fit: FlexFit.loose,
                   child: Image.asset((req.status == '1')
-                      ? "assets/new.png"
-                      : "assets/in-progress.png"),
+                      ? "assets/images/new.png"
+                      : "assets/images/in-progress.png"),
                 ),
                 Flexible(
                   flex: 8,

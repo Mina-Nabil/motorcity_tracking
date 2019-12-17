@@ -3,6 +3,7 @@ import 'package:motorcity_tracking/providers/auth.dart';
 import 'package:motorcity_tracking/screens/home.dart';
 import 'package:provider/provider.dart';
 import "package:fab_menu/fab_menu.dart";
+import 'package:motorcity_tracking/screens/settings.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "/login";
@@ -19,21 +20,33 @@ class _LoginScreenState extends State<LoginScreen> {
   String password;
   List<MenuData> menuDataList;
 
-  void _showLoginFailed(context2) {
-    Scaffold.of(context2).showSnackBar(new SnackBar(
-        content: new Text(
-            'Invalid Data! Please check User/Pass and selected Server')));
+  void initState(){
+    super.initState();
+    menuDataList = [
+      new MenuData(Icons.settings, (context, menuData){
+        Navigator.of(context).pushNamed(SettingsScreen.routeName);
+      },
+      labelText: "Settings")
+    ];
   }
 
-  Future<void> checkUser(context2) async {
+  void _showLoginFailed(String msg, context) {
+    Scaffold.of(context).showSnackBar(new SnackBar(
+        content: new Text(
+            "Error: " + msg)));
+  }
+
+  Future<void> checkUser(context) async {
     this.username = LoginScreen._user.text;
     this.password = LoginScreen._pass.text;
 
-    Provider.of<Auth>(context2).login(username, password).then((success) {
-      if (success) {
+    Provider.of<Auth>(context).login(username, password).then((response) {
+      if (response == 1) {
         Navigator.pushReplacementNamed(context, HomeScreen.routeName);
+      } else if (response == 0){
+        _showLoginFailed("Invalid data, please check user/pass", context);
       } else {
-        _showLoginFailed(context2);
+        _showLoginFailed("No connection to server", context);
       }
     });
   }
@@ -47,13 +60,14 @@ class _LoginScreenState extends State<LoginScreen> {
           maskColor: Colors.black,
         ),
         floatingActionButtonLocation: fabMenuLocation,
-        body: Container(
+        body: Builder(
+          builder: (context) => Container(
             padding: EdgeInsets.only(right: 80, left: 80),
             color: Colors.white,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image.asset('assets/Motorcity_Logo.png'),
+                Image.asset('assets/images/Motorcity_Logo.png'),
                 TextField(
                   controller: LoginScreen._user,
                   autofocus: true,
@@ -72,8 +86,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 Container(
                     width: double.infinity,
-                    child: Builder(
-                      builder: (context2) => RaisedButton(
+                    child: RaisedButton(
                         color: Colors.blue,
                         child: Text(
                           "Login",
@@ -82,10 +95,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             fontSize: 16,
                           ),
                         ),
-                        onPressed: () => checkUser(context2),
+                        onPressed: () => checkUser(context),
                       ),
-                    ))
+                    )
               ],
-            )));
+            ))));
   }
 }

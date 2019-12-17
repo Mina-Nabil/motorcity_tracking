@@ -14,19 +14,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: Auth(),
-        ),
+        ChangeNotifierProvider.value(value: Auth()),
         ChangeNotifierProvider.value(value: Requests())
       ],
-      child: Consumer(
-        builder: (context, auth, _ ) =>
-         MaterialApp(
+      child: Consumer<Auth>(
+
+        builder: (context, auth, _) => MaterialApp(
           title: 'Truck Tracker',
           routes: {
-            LoginScreen.routeName:    (context) =>  LoginScreen(),
-            HomeScreen.routeName:     (context) =>  HomeScreen(),
-            SettingsScreen.routeName: (context) =>  SettingsScreen() 
+            LoginScreen.routeName: (context) => LoginScreen(),
+            HomeScreen.routeName: (context) => HomeScreen(),
+            SettingsScreen.routeName: (context) => SettingsScreen()
           },
           theme: ThemeData(
             primarySwatch: Colors.blue,

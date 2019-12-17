@@ -9,7 +9,7 @@ class Auth with ChangeNotifier {
   final _serverInit = "http://";
   String _serverIP = "3.121.234.234";
   final String _serverExt = "/motorcity/api/" ;
-  final String _login = "managerLogin" ;
+  final String _login = "managerlogin" ;
 
   bool _isAuthenticated = false;
 
@@ -27,30 +27,40 @@ class Auth with ChangeNotifier {
     });
   }
 
-  Future<bool> login(String user, String password) async {
+  Future<int> login(String user, String password) async {
+
+    _serverIP = await FlutterKeychain.get(key: "serverIP");
+
     try {
       final serverURL = _serverInit + _serverIP + _serverExt ;
       final response = await http.post(serverURL + _login,
           body: {"MNGRName": user, "MNGRPass": password});
       if (response.statusCode == 200) {
-        var id = json.decode(response.body)['USER _ID'];
+        var id = json.decode(response.body)['USER_ID'];
         if (id != null) {
           _isAuthenticated = true;
           await FlutterKeychain.put(key: "userID", value: id);
           await FlutterKeychain.put(key: "userName", value: user);
-          return true;
+          return 1;
         } else
-          return false;
-      } else
-        return false;
+          
+          return 0;
+      } else {
+        
+        return -1;
+      }
     } catch (e) {
-      return false;
+      return -1;
     }
   }
 
   Future<bool> isloggedIn() async {
     String id = await FlutterKeychain.get(key: "userID");
     return (id != null);
+  }
+
+  void logout() {
+    FlutterKeychain.clear();
   }
 
 }

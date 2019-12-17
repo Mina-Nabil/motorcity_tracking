@@ -24,7 +24,7 @@ class TruckRequest {
     this.comment = comment ?? "N/A";
   }
 
-  TruckRequest.fromJson(Map<String, String> response) {
+  TruckRequest.fromJson(Map<String, dynamic> response) {
     this.id = response['TKRQ_ID'];
     this.from = response['TKRQ_STRT_LOC'] ?? "N/A";
     this.to = response['TKRQ_END_LOC'] ?? "N/A";

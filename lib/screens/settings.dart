@@ -12,8 +12,13 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    _mg.value=Provider.of(context).getServerIP();
+    
+    Provider.of<Requests>(context).getServerIP().then((tmp){
+      _mg.text = tmp;
+    });
+
     return Scaffold(
+            
             appBar: AppBar(
               title: Text("Settings", style: TextStyle(fontSize: 25),),
               ),

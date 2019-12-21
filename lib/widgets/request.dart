@@ -16,7 +16,7 @@ class RequestItem extends StatelessWidget {
         color: (req.status == '1') ? Colors.green[100] : Colors.blue[50],
         child: FlatButton(
             onPressed: () =>
-                Navigator.of(context).pushReplacementNamed(MapScreen.routeName),
+                Navigator.of(context).pushNamed(MapScreen.routeName),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(5),

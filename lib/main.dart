@@ -32,7 +32,8 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          home: auth.isAuthenticated ? HomeScreen() : LoginScreen(),
+          // home: auth.isAuthenticated ? HomeScreen() : LoginScreen(),
+          home: MapScreen(),
         ),
       ),
     );

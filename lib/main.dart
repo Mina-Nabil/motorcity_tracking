@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:motorcity_tracking/providers/requests.dart';
-import 'package:motorcity_tracking/providers/auth.dart';
-import 'package:motorcity_tracking/screens/home.dart';
-import 'package:motorcity_tracking/screens/login.dart';
-import 'package:motorcity_tracking/screens/settings.dart';
 import 'package:provider/provider.dart';
+
+import './providers/requests.dart';
+import './providers/auth.dart';
+import './screens/home.dart';
+import './screens/login.dart';
+import './screens/map.dart';
+import './screens/settings.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,7 +26,8 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (context) => LoginScreen(),
             HomeScreen.routeName: (context) => HomeScreen(),
-            SettingsScreen.routeName: (context) => SettingsScreen()
+            SettingsScreen.routeName: (context) => SettingsScreen(),
+            MapScreen.routeName : (_) => MapScreen()
           },
           theme: ThemeData(
             primarySwatch: Colors.blue,

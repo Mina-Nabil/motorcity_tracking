@@ -1,6 +1,7 @@
 import 'package:motorcity_tracking/models/truckrequest.dart';
 
 import 'package:flutter/material.dart';
+import '../screens/map.dart';
 
 class RequestItem extends StatelessWidget {
   final TruckRequest req;
@@ -15,7 +16,7 @@ class RequestItem extends StatelessWidget {
         color: (req.status == '1') ? Colors.green[100] : Colors.blue[50],
         child: FlatButton(
             onPressed: () =>
-                Navigator.of(context).pushReplacementNamed("routeName"),
+                Navigator.of(context).pushReplacementNamed(MapScreen.routeName),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(5),

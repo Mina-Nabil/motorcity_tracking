@@ -1,6 +1,11 @@
+import 'dart:typed_data';
+
+import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
-// import 'dart:async';
+import 'dart:ui' as ui;
+
+import 'dart:async';
 
 const GOOGLE_API_KEY = 'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k';
 GoogleMapController controller;
@@ -15,42 +20,61 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => MapScreenState();
 }
 
-
 class MapScreenState extends State<MapScreen> {
+  Future<Uint8List> getBytesFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))
+        .buffer
+        .asUint8List();
+  }
 
-void setMarkers() {
-  MarkerId markerIdFrom = MarkerId(from);
-  LatLng fromPosition = LatLng(30.017278, 31.455757);
-  Marker marker1 = Marker(
-    markerId: markerIdFrom,
-    position: fromPosition,
-    infoWindow: InfoWindow(
-      title: from,
-      snippet: 'AAA a AA ',
-    ),
-  );
+  void setMarkers() async {
+    final Uint8List markerIcon =
+        await getBytesFromAsset('assets/images/track_icon.png', 70);
+    // BitmapDescriptor truckIcon;
 
-  MarkerId markerIdTo = MarkerId(to);
-  LatLng toPosition = LatLng(30.025459, 31.495579);
-  Marker marker2 = Marker(
-    markerId: markerIdTo,
-    position: toPosition,
-    infoWindow: InfoWindow(
-      title: to,
-      snippet: 'BB BBBBB  BB B ',
-    ),
-  );
+    // BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+    //         'assets/images/track_icon.png')
+    //     .then((onValue) {
+    //   truckIcon = onValue;
+    // });
+    MarkerId markerIdFrom = MarkerId(from);
+    LatLng fromPosition = LatLng(30.017278, 31.455757);
+    Marker marker1 = Marker(
+      markerId: markerIdFrom,
+      position: fromPosition,
+      infoWindow: InfoWindow(
+        title: from,
+        snippet: 'AAA a AA ',
+      ),
+    );
 
-  setState(()
-  {
-    markers[markerIdFrom] = marker1;
-    markers[markerIdTo] = marker2;
-  });
+    MarkerId markerIdTo = MarkerId(to);
+    LatLng toPosition = LatLng(30.025459, 31.495579);
+    Marker marker2 = Marker(
+      markerId: markerIdTo,
+      position: toPosition,
+      infoWindow: InfoWindow(
+        title: to,
+        snippet: 'BB BBBBB  BB B ',
+      ),
+      icon: BitmapDescriptor.fromBytes(markerIcon),
+    );
 
-  LatLngBounds bound = LatLngBounds(southwest: fromPosition, northeast: toPosition);
-  CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
+    setState(() {
+      markers[markerIdFrom] = marker1;
+      markers[markerIdTo] = marker2;
+    });
+
+    LatLngBounds bound =
+        LatLngBounds(southwest: fromPosition, northeast: toPosition);
+    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
     controller.animateCamera(u2);
-}
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +136,6 @@ void setMarkers() {
                     setMarkers();
                   },
                   markers: Set<Marker>.of(markers.values),
-                  
                 ))
           ],
         ),
@@ -147,9 +170,4 @@ void setMarkers() {
 //         icon: Icon(Icons.directions_boat),
 //       ),
 //     );
-//   }
-
-//   Future<void> _goToTheLake() async {
-//     final GoogleMapController controller = await _controller.future;
-//     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
 //   }

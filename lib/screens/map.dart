@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,19 @@ const GOOGLE_API_KEY = 'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k';
 GoogleMapController controller;
 String from = "From";
 String to = "To";
+String name = "name";
+double fromLat = 30.017278;
+double fromLng = 31.455757;
+double toLat = 30.025459;
+double toLng = 31.495579;
+String id = "1";
+double truckLat = 0;
+double truckLng = 0;
+String truckMarkerStr = "truck";
+LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
+Marker truckMarker;
+MarkerId truckMarkerID = MarkerId('$truckMarkerStr');
+
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
 class MapScreen extends StatefulWidget {
@@ -32,7 +46,7 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void setMarkers() async {
-    final Uint8List markerIcon =
+    final Uint8List trackIcon =
         await getBytesFromAsset('assets/images/track_icon.png', 70);
     // BitmapDescriptor truckIcon;
 
@@ -42,31 +56,42 @@ class MapScreenState extends State<MapScreen> {
     //   truckIcon = onValue;
     // });
     MarkerId markerIdFrom = MarkerId(from);
-    LatLng fromPosition = LatLng(30.017278, 31.455757);
+
+    LatLng fromPosition = LatLng(fromLat, fromLng);
     Marker marker1 = Marker(
       markerId: markerIdFrom,
       position: fromPosition,
       infoWindow: InfoWindow(
         title: from,
-        snippet: 'AAA a AA ',
+        snippet: 'Discription',
       ),
     );
 
     MarkerId markerIdTo = MarkerId(to);
-    LatLng toPosition = LatLng(30.025459, 31.495579);
+    LatLng toPosition = LatLng(toLat, toLng);
     Marker marker2 = Marker(
       markerId: markerIdTo,
       position: toPosition,
       infoWindow: InfoWindow(
         title: to,
-        snippet: 'BB BBBBB  BB B ',
+        snippet: 'Discription',
       ),
-      icon: BitmapDescriptor.fromBytes(markerIcon),
+    );
+
+    truckMarker = Marker(
+      markerId: truckMarkerID,
+      position: truckMarkerPosition,
+      infoWindow: InfoWindow(
+        title: "Truck",
+        snippet: 'Discription',
+      ),
+      icon: BitmapDescriptor.fromBytes(trackIcon),
     );
 
     setState(() {
       markers[markerIdFrom] = marker1;
       markers[markerIdTo] = marker2;
+      markers[truckMarkerID] = truckMarker;
     });
 
     LatLngBounds bound =
@@ -75,6 +100,34 @@ class MapScreenState extends State<MapScreen> {
     controller.animateCamera(u2);
   }
 
+  void trackCarLocation() {
+    FirebaseDatabase fbdb = FirebaseDatabase.instance;
+    DatabaseReference dbr = fbdb
+        .reference()
+        .child('locations')
+        .reference()
+        .child('$id')
+        .reference()
+        .child('lat');
+    dbr.onValue.listen((Event event) {
+      setState(() {
+        truckLat = double.parse(event.snapshot.value.toString());
+      });
+    });
+
+    DatabaseReference dbr2 = fbdb
+        .reference()
+        .child('locations')
+        .reference()
+        .child('$id')
+        .reference()
+        .child('lng');
+    dbr2.onValue.listen((Event event) {
+      setState(() {
+        truckLng = double.parse(event.snapshot.value.toString());
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +143,7 @@ class MapScreenState extends State<MapScreen> {
               flex: 1,
               child: Align(
                 alignment: Alignment.center,
-                child: Text('Name'),
+                child: Text('$name'),
               ),
             ),
             Expanded(
@@ -103,7 +156,7 @@ class MapScreenState extends State<MapScreen> {
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('Place From'),
+                    child: Text('$from'),
                   )
                 ],
               ),
@@ -118,7 +171,7 @@ class MapScreenState extends State<MapScreen> {
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('Place To'),
+                    child: Text('$to'),
                   )
                 ],
               ),
@@ -134,6 +187,7 @@ class MapScreenState extends State<MapScreen> {
                   onMapCreated: (googleMapController) {
                     controller = googleMapController;
                     setMarkers();
+                    trackCarLocation();
                   },
                   markers: Set<Marker>.of(markers.values),
                 ))

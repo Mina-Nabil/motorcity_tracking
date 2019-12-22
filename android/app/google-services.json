@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "479034416908",
+    "firebase_url": "https://motor-city-fb41b.firebaseio.com",
+    "project_id": "motor-city-fb41b",
+    "storage_bucket": "motor-city-fb41b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:479034416908:android:4794f393ed21df83f67329",
+        "android_client_info": {
+          "package_name": "com.example.motorcity_tracking"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "479034416908-idiiqktiag9buahedqaaissg2q9nm4ll.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXX99ZU6zY1RMsTrAMpQxC5rRk8_LrwQ4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "479034416908-idiiqktiag9buahedqaaissg2q9nm4ll.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

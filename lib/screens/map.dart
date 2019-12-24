@@ -112,6 +112,7 @@ class MapScreenState extends State<MapScreen> {
     dbr.onValue.listen((Event event) {
       setState(() {
         truckLat = double.parse(event.snapshot.value.toString());
+        print("lat : $truckLat");
       });
     });
 
@@ -125,6 +126,7 @@ class MapScreenState extends State<MapScreen> {
     dbr2.onValue.listen((Event event) {
       setState(() {
         truckLng = double.parse(event.snapshot.value.toString());
+        print("lng : $truckLng");
       });
     });
   }

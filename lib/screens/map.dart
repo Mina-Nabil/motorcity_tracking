@@ -112,7 +112,12 @@ class MapScreenState extends State<MapScreen> {
     dbr.onValue.listen((Event event) {
       setState(() {
         truckLat = double.parse(event.snapshot.value.toString());
-        print("lat : $truckLat");
+        LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
+        Marker truckMarker2 =
+            truckMarker.copyWith(positionParam: truckMarkerPosition);
+
+        // print("lat : $truckLat");
+        markers[truckMarkerID] = truckMarker2;
       });
     });
 
@@ -126,7 +131,12 @@ class MapScreenState extends State<MapScreen> {
     dbr2.onValue.listen((Event event) {
       setState(() {
         truckLng = double.parse(event.snapshot.value.toString());
-        print("lng : $truckLng");
+        // print("lng : $truckLng");
+        LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
+        Marker truckMarker2 =
+            truckMarker.copyWith(positionParam: truckMarkerPosition);
+
+        markers[truckMarkerID] = truckMarker2;
       });
     });
   }

@@ -8,7 +8,7 @@ class SettingsScreen extends StatelessWidget {
 
   static const String routeName = "/settings";
 
-  TextEditingController _mg = new TextEditingController();
+  final TextEditingController _mg = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {

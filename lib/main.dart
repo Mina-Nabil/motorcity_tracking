@@ -20,20 +20,19 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: Requests())
       ],
       child: Consumer<Auth>(
-
         builder: (context, auth, _) => MaterialApp(
           title: 'Truck Tracker',
           routes: {
             LoginScreen.routeName: (context) => LoginScreen(),
             HomeScreen.routeName: (context) => HomeScreen(),
             SettingsScreen.routeName: (context) => SettingsScreen(),
-            MapScreen.routeName : (_) => MapScreen()
+            MapScreen.routeName: (context) => MapScreen()
           },
           theme: ThemeData(
-            primarySwatch: Colors.blue,
+              primarySwatch: Colors.blue,
+              hintColor: Colors.white70,
           ),
-          // home: auth.isAuthenticated ? HomeScreen() : LoginScreen(),
-          home: MapScreen(),
+          home: auth.isAuthenticated ? HomeScreen() : LoginScreen(),
         ),
       ),
     );

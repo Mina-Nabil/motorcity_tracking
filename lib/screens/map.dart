@@ -1,40 +1,50 @@
 import 'dart:typed_data';
-
+import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import '../providers/requests.dart';
 import 'dart:ui' as ui;
-
 import 'dart:async';
+import 'package:motorcity_tracking/models/truckrequest.dart';
 
-const GOOGLE_API_KEY = 'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k';
+//Map Configuration Variables
+const GOOGLE_API_KEY = 'AIzaSyDvOMFh-AzpZJP-knXdYq551uNO_19Zp2A<'; //AIzaSyAledESPK4L-85edzOdydEohODjWgqZd2Q
+
 GoogleMapController controller;
-String from = "From";
-String to = "To";
-String name = "name";
-double fromLat = 30.017278;
-double fromLng = 31.455757;
-double toLat = 30.025459;
-double toLng = 31.495579;
-String id = "1";
+
+//Request Variables
+TruckRequest _truckRequest; 
+String _id ; 
+String _driverID;
+
+
+//Tracking Variables
 double truckLat = 0;
 double truckLng = 0;
 String truckMarkerStr = "truck";
 LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
 Marker truckMarker;
 MarkerId truckMarkerID = MarkerId('$truckMarkerStr');
-
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
+
 
 class MapScreen extends StatefulWidget {
   static String routeName = "MapScreen";
+
+  MapScreen() {
+    _truckRequest = new TruckRequest();
+  }
 
   @override
   State<MapScreen> createState() => MapScreenState();
 }
 
 class MapScreenState extends State<MapScreen> {
+
+  //Initializing truck request object holding all the request data
+
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
@@ -46,6 +56,11 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void setMarkers() async {
+      //Initializing Request Object
+    _id = ModalRoute.of(context).settings.arguments;
+    _truckRequest = await Provider.of<Requests>(context).getFullRequest(_id);
+    _driverID = "1";
+
     final Uint8List trackIcon =
         await getBytesFromAsset('assets/images/track_icon.png', 70);
     // BitmapDescriptor truckIcon;
@@ -55,26 +70,24 @@ class MapScreenState extends State<MapScreen> {
     //     .then((onValue) {
     //   truckIcon = onValue;
     // });
-    MarkerId markerIdFrom = MarkerId(from);
+    MarkerId markerIdFrom = MarkerId(_truckRequest.from);
 
-    LatLng fromPosition = LatLng(fromLat, fromLng);
+    LatLng fromPosition = LatLng(_truckRequest.startLong, _truckRequest.startLatt);
     Marker marker1 = Marker(
       markerId: markerIdFrom,
       position: fromPosition,
       infoWindow: InfoWindow(
-        title: from,
-        snippet: 'Discription',
+        title: _truckRequest.from,
       ),
     );
 
-    MarkerId markerIdTo = MarkerId(to);
-    LatLng toPosition = LatLng(toLat, toLng);
+    MarkerId markerIdTo = MarkerId(_truckRequest.to);
+    LatLng toPosition = LatLng(_truckRequest.endLong, _truckRequest.endLatt);
     Marker marker2 = Marker(
       markerId: markerIdTo,
       position: toPosition,
       infoWindow: InfoWindow(
-        title: to,
-        snippet: 'Discription',
+        title: _truckRequest.to,
       ),
     );
 
@@ -82,8 +95,7 @@ class MapScreenState extends State<MapScreen> {
       markerId: truckMarkerID,
       position: truckMarkerPosition,
       infoWindow: InfoWindow(
-        title: "Truck",
-        snippet: 'Discription',
+        title: "Truck Pos.",
       ),
       icon: BitmapDescriptor.fromBytes(trackIcon),
     );
@@ -95,7 +107,7 @@ class MapScreenState extends State<MapScreen> {
     });
 
     LatLngBounds bound =
-        LatLngBounds(southwest: fromPosition, northeast: toPosition);
+        LatLngBounds(southwest: toPosition, northeast: fromPosition);
     CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
     controller.animateCamera(u2);
   }
@@ -106,7 +118,7 @@ class MapScreenState extends State<MapScreen> {
         .reference()
         .child('locations')
         .reference()
-        .child('$id')
+        .child('$_driverID')
         .reference()
         .child('lat');
     dbr.onValue.listen((Event event) {
@@ -125,7 +137,7 @@ class MapScreenState extends State<MapScreen> {
         .reference()
         .child('locations')
         .reference()
-        .child('$id')
+        .child('$_driverID')
         .reference()
         .child('lng');
     dbr2.onValue.listen((Event event) {
@@ -141,11 +153,12 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map'),
+        title: Text('Request In Progress'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -155,7 +168,7 @@ class MapScreenState extends State<MapScreen> {
               flex: 1,
               child: Align(
                 alignment: Alignment.center,
-                child: Text('$name'),
+                child: Text('${_truckRequest.driverName}'),
               ),
             ),
             Expanded(
@@ -164,11 +177,11 @@ class MapScreenState extends State<MapScreen> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Text('From'),
+                    child: Text('Start:', style: TextStyle(fontWeight: FontWeight.bold),),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('$from'),
+                    child: Text('${_truckRequest.from}'),
                   )
                 ],
               ),
@@ -179,11 +192,11 @@ class MapScreenState extends State<MapScreen> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Text('To'),
+                    child: Text('End:', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   Expanded(
                     flex: 2,
-                    child: Text('$to'),
+                    child: Text('${_truckRequest.to}'),
                   )
                 ],
               ),

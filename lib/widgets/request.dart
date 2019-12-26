@@ -10,13 +10,13 @@ class RequestItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
+
     return Card(
         margin: const EdgeInsets.all(5),
         color: (req.status == '1') ? Colors.green[100] : Colors.blue[50],
         child: FlatButton(
             onPressed: () =>
-                Navigator.of(context).pushNamed(MapScreen.routeName),
+                Navigator.of(context).pushNamed(MapScreen.routeName, arguments: req.id),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(5),

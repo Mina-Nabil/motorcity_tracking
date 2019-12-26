@@ -72,7 +72,7 @@ class MapScreenState extends State<MapScreen> {
     // });
     MarkerId markerIdFrom = MarkerId(_truckRequest.from);
 
-    LatLng fromPosition = LatLng(_truckRequest.startLong, _truckRequest.startLatt);
+    LatLng fromPosition = LatLng(_truckRequest.startLatt, _truckRequest.startLong);
     Marker marker1 = Marker(
       markerId: markerIdFrom,
       position: fromPosition,
@@ -82,7 +82,7 @@ class MapScreenState extends State<MapScreen> {
     );
 
     MarkerId markerIdTo = MarkerId(_truckRequest.to);
-    LatLng toPosition = LatLng(_truckRequest.endLong, _truckRequest.endLatt);
+    LatLng toPosition = LatLng(_truckRequest.endLatt, _truckRequest.endLong);
     Marker marker2 = Marker(
       markerId: markerIdTo,
       position: toPosition,

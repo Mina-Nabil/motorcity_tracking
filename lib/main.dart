@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
             MapScreen.routeName: (context) => MapScreen()
           },
           theme: ThemeData(
+            fontFamily: 'NotoSerif',
             textTheme: TextTheme(body1: TextStyle(fontSize: 14)),
             primaryColor: Color.fromRGBO(0,46,72,1),
             cursorColor: Color.fromRGBO(0,46,72,1),

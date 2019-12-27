@@ -50,7 +50,7 @@ dev_dependencies:
 flutter_icons:
   android: true 
   ios: true
-  image_path: assets/images/Motorcity_Logo-wht-blue.png
+  image_path: assets/images/Motorcity-trck-Logo.png
 
 
 
@@ -104,4 +104,16 @@ flutter:
     - assets/images/Motorcity-Logo-trns-blue2.png
     - assets/images/Motorcity-Logo-wht-blue.png
     - assets/images/Motorcity-Logo-wht-blue2.png
+
+  fonts:
+  - family: NotoSerif
+    fonts:
+    - asset: assets/fonts/NotoSerif-Regular.ttf
+    - asset: assets/fonts/NotoSerif-Italic.ttf
+      style: italic
+    - asset: assets/fonts/NotoSerif-Bold.ttf
+      weight: 700
+    - asset: assets/fonts/NotoSerif-BoldItalic.ttf
+      style: italic
+      weight: 700
 

@@ -107,7 +107,7 @@ class MapScreenState extends State<MapScreen> {
     });
 
     LatLngBounds bound =
-        LatLngBounds(southwest: toPosition, northeast: fromPosition);
+        LatLngBounds(southwest: fromPosition, northeast: toPosition);
     CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
     controller.animateCamera(u2);
   }

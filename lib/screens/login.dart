@@ -106,7 +106,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     var newLogin = Builder(
         builder: (context) => Container(
-            color: Colors.blue[100],
+            color: Color.fromRGBO(0,46,72,0.5),
             child: Center(
               child: ListView(
                 shrinkWrap: true,
@@ -117,13 +117,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: CircleAvatar(
                       backgroundColor: Colors.transparent,
                       radius: 48.0,
-                      child: Image.asset('assets/images/Motorcity_Logo.png'),
+                      child: Image.asset('assets/images/Motorcity-Logo-wht-blue2.png'),
                     ),
                   ),
                   SizedBox(height: 48.0),
                   TextFormField(
                     controller: LoginScreen._user,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                     autofocus: false,
                     decoration: InputDecoration(
                       hintStyle: TextStyle(color: Colors.white54),
@@ -142,7 +142,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 8.0),
                   TextFormField(
                     controller: LoginScreen._pass,
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
                     autofocus: false,
                     obscureText: true,
                     decoration: InputDecoration(
@@ -168,9 +168,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       onPressed: () => checkUser(context),
                       padding: EdgeInsets.all(12),
-                      color: Colors.lightBlueAccent,
+                      color: Color.fromRGBO(0,46,72,1),
                       child:
-                          Text('Log In', style: TextStyle(color: Colors.white)),
+                          Text('Log In', style: TextStyle(fontSize: 18,color: Colors.white)),
                     ),
                   )
                 ],

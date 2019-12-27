@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:typed_data';
 import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -10,25 +11,30 @@ import 'dart:async';
 import 'package:motorcity_tracking/models/truckrequest.dart';
 
 //Map Configuration Variables
-const GOOGLE_API_KEY = 'AIzaSyDvOMFh-AzpZJP-knXdYq551uNO_19Zp2A<'; //AIzaSyAledESPK4L-85edzOdydEohODjWgqZd2Q
+const GOOGLE_API_KEY =
+    'AIzaSyDvOMFh-AzpZJP-knXdYq551uNO_19Zp2A<'; //AIzaSyAledESPK4L-85edzOdydEohODjWgqZd2Q
 
 GoogleMapController controller;
 
 //Request Variables
-TruckRequest _truckRequest; 
-String _id ; 
-String _driverID;
-
+TruckRequest _truckRequest;
+String _id;
+String _driverID = "1";
 
 //Tracking Variables
 double truckLat = 0;
 double truckLng = 0;
+double fromLat = 0;
+double fromLng = 0;
+double toLat = 0;
+double toLng = 0;
 String truckMarkerStr = "truck";
 LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
 Marker truckMarker;
 MarkerId truckMarkerID = MarkerId('$truckMarkerStr');
+MarkerId fromMarkerID = MarkerId("from");
+MarkerId toMarkerID = MarkerId("to");
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
-
 
 class MapScreen extends StatefulWidget {
   static String routeName = "MapScreen";
@@ -42,8 +48,23 @@ class MapScreen extends StatefulWidget {
 }
 
 class MapScreenState extends State<MapScreen> {
-
   //Initializing truck request object holding all the request data
+
+  double parseDouble(dynamic value) {
+    try {
+      if (value is String) {
+        return double.parse(value);
+      } else if (value is double) {
+        return value;
+      } else {
+        return 0.0;
+      }
+    } catch (e) {
+      //print(e.toString());
+      // return null if double.parse fails
+      return null;
+    }
+  }
 
   Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData data = await rootBundle.load(path);
@@ -55,14 +76,52 @@ class MapScreenState extends State<MapScreen> {
         .asUint8List();
   }
 
+  void animateCamera() {
+    double southWestLat = 100000;
+    double southWestLng = 100000;
+    double northEastLat = -100000;
+    double northEastLng = -100000;
+
+    markers.forEach((key, value) {
+      double lat = value.position.latitude;
+      if (lat != null && lat != 0) {
+        if (lat < southWestLat) {
+          southWestLat = lat;
+        }
+        if (lat > northEastLat) {
+          northEastLat = lat;
+        }
+      }
+
+      double lng = value.position.longitude;
+      if (lng != null && lng != 0) {
+        if (lng < southWestLng) {
+          southWestLng = lng;
+        }
+        if (lng > northEastLng) {
+          northEastLng = lng;
+        }
+      }
+    });
+
+    if (southWestLat != 100000 &&
+        southWestLng != 100000 &&
+        northEastLat != -100000 &&
+        northEastLng != -100000) {
+      LatLng southWestLatLng = LatLng(southWestLat, southWestLng);
+      LatLng northEastLatLng = LatLng(northEastLat, northEastLng);
+      LatLngBounds bound =
+          LatLngBounds(southwest: southWestLatLng, northeast: northEastLatLng);
+      CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
+      controller.animateCamera(u2);
+    }
+  }
+
   void setMarkers() async {
-      //Initializing Request Object
+    //Initializing Request Object
     _id = ModalRoute.of(context).settings.arguments;
     _truckRequest = await Provider.of<Requests>(context).getFullRequest(_id);
-    _driverID = "1";
 
-    final Uint8List trackIcon =
-        await getBytesFromAsset('assets/images/track_icon.png', 70);
     // BitmapDescriptor truckIcon;
 
     // BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
@@ -70,26 +129,39 @@ class MapScreenState extends State<MapScreen> {
     //     .then((onValue) {
     //   truckIcon = onValue;
     // });
-    MarkerId markerIdFrom = MarkerId(_truckRequest.from);
 
-    LatLng fromPosition = LatLng(_truckRequest.startLatt, _truckRequest.startLong);
-    Marker marker1 = Marker(
-      markerId: markerIdFrom,
+    fromLat = _truckRequest.startLatt;
+    fromLng = _truckRequest.startLong;
+    LatLng fromPosition = LatLng(fromLat, fromLng);
+    Marker markerFrom = Marker(
+      markerId: fromMarkerID,
       position: fromPosition,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       infoWindow: InfoWindow(
         title: _truckRequest.from,
       ),
     );
 
-    MarkerId markerIdTo = MarkerId(_truckRequest.to);
-    LatLng toPosition = LatLng(_truckRequest.endLatt, _truckRequest.endLong);
-    Marker marker2 = Marker(
-      markerId: markerIdTo,
+    toLat = _truckRequest.endLatt;
+    toLng = _truckRequest.endLong;
+    LatLng toPosition = LatLng(toLat, toLng);
+    Marker markerTo = Marker(
+      markerId: toMarkerID,
       position: toPosition,
       infoWindow: InfoWindow(
         title: _truckRequest.to,
       ),
     );
+
+    setState(() {
+      markers[fromMarkerID] = markerFrom;
+      markers[toMarkerID] = markerTo;
+    });
+  }
+
+  void intializeTruckMarker() async {
+    final Uint8List trackIcon =
+        await getBytesFromAsset('assets/images/track_icon.png', 70);
 
     truckMarker = Marker(
       markerId: truckMarkerID,
@@ -99,60 +171,61 @@ class MapScreenState extends State<MapScreen> {
       ),
       icon: BitmapDescriptor.fromBytes(trackIcon),
     );
+  }
 
-    setState(() {
-      markers[markerIdFrom] = marker1;
-      markers[markerIdTo] = marker2;
-      markers[truckMarkerID] = truckMarker;
-    });
-
-    LatLngBounds bound =
-        LatLngBounds(southwest: fromPosition, northeast: toPosition);
-    CameraUpdate u2 = CameraUpdate.newLatLngBounds(bound, 50);
-    controller.animateCamera(u2);
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    intializeTruckMarker();
   }
 
   void trackCarLocation() {
     FirebaseDatabase fbdb = FirebaseDatabase.instance;
-    DatabaseReference dbr = fbdb
+    DatabaseReference dbrLat = fbdb
         .reference()
         .child('locations')
         .reference()
         .child('$_driverID')
         .reference()
         .child('lat');
-    dbr.onValue.listen((Event event) {
+    dbrLat.onValue.listen((Event event) {
       setState(() {
-        truckLat = double.parse(event.snapshot.value.toString());
-        LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
-        Marker truckMarker2 =
-            truckMarker.copyWith(positionParam: truckMarkerPosition);
+        truckLat = parseDouble(event.snapshot.value.toString());
 
-        // print("lat : $truckLat");
-        markers[truckMarkerID] = truckMarker2;
+        if (truckLat != null) {
+          truckMarkerPosition = LatLng(truckLat, truckLng);
+
+          Marker truckMarker2 =
+              truckMarker.copyWith(positionParam: truckMarkerPosition);
+
+          markers[truckMarkerID] = truckMarker2;
+          // print("Lat : $truckLat");
+        }
       });
     });
 
-    DatabaseReference dbr2 = fbdb
+    DatabaseReference dbrLng = fbdb
         .reference()
         .child('locations')
         .reference()
         .child('$_driverID')
         .reference()
         .child('lng');
-    dbr2.onValue.listen((Event event) {
+    dbrLng.onValue.listen((Event event) {
       setState(() {
-        truckLng = double.parse(event.snapshot.value.toString());
-        // print("lng : $truckLng");
-        LatLng truckMarkerPosition = LatLng(truckLat, truckLng);
-        Marker truckMarker2 =
-            truckMarker.copyWith(positionParam: truckMarkerPosition);
+        truckLng = parseDouble(event.snapshot.value.toString());
+        if (truckLng != null) {
+          truckMarkerPosition = LatLng(truckLat, truckLng);
+          Marker truckMarker2 =
+              truckMarker.copyWith(positionParam: truckMarkerPosition);
 
-        markers[truckMarkerID] = truckMarker2;
+          markers[truckMarkerID] = truckMarker2;
+          // print("Lng : $truckLng");
+        }
       });
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +250,10 @@ class MapScreenState extends State<MapScreen> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Text('Start:', style: TextStyle(fontWeight: FontWeight.bold),),
+                    child: Text(
+                      'Start:',
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Expanded(
                     flex: 2,
@@ -192,7 +268,8 @@ class MapScreenState extends State<MapScreen> {
                 children: <Widget>[
                   Expanded(
                     flex: 1,
-                    child: Text('End:', style: TextStyle(fontWeight: FontWeight.bold)),
+                    child: Text('End:',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   Expanded(
                     flex: 2,
@@ -213,11 +290,18 @@ class MapScreenState extends State<MapScreen> {
                     controller = googleMapController;
                     setMarkers();
                     trackCarLocation();
+                    animateCamera();
                   },
                   markers: Set<Marker>.of(markers.values),
+                  myLocationButtonEnabled: false,
                 ))
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: animateCamera,
+        label: Text('Locations'),
+        icon: Icon(Icons.location_on),
       ),
     );
   }

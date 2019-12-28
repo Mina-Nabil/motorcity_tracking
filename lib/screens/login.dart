@@ -180,7 +180,6 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
         floatingActionButton: new FabMenu(
           menus: menuDataList,
-          mainButtonBackgroundColor: Colors.lightBlueAccent,
           maskColor: Colors.black,
         ),
         floatingActionButtonLocation: fabMenuLocation,

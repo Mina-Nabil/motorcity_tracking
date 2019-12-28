@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Requests In Progess"),
+        title: Text("In-Progess"),
       ),
       floatingActionButton: new FabMenu(
           menus: menuDataList,

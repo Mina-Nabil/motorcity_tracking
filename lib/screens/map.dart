@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,6 +8,7 @@ import '../providers/requests.dart';
 import 'dart:ui' as ui;
 import 'dart:async';
 import 'package:motorcity_tracking/models/truckrequest.dart';
+import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 //Map Configuration Variables
 const GOOGLE_API_KEY =
@@ -47,9 +47,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => MapScreenState();
 }
 
-class MapScreenState extends State<MapScreen> {
-  //Initializing truck request object holding all the request data
-
+class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   double parseDouble(dynamic value) {
     try {
       if (value is String) {
@@ -176,7 +174,6 @@ class MapScreenState extends State<MapScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     intializeTruckMarker();
   }
@@ -228,79 +225,156 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 
+  //build bottom sheet
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Request In Progress'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Align(
-                alignment: Alignment.center,
-                child: Text('${_truckRequest.driverName}'),
+      body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        Expanded(
+            child: GoogleMap(
+              mapType: MapType.normal,
+              initialCameraPosition: CameraPosition(
+                target: LatLng(30.0355, 31.2230),
+                zoom: 14.4746,
               ),
+              onMapCreated: (googleMapController) {
+                controller = googleMapController;
+                trackCarLocation();
+                setMarkers();
+              },
+              markers: Set<Marker>.of(markers.values),
+              myLocationButtonEnabled: false,
+            )),
+      ]),
+      bottomSheet: SolidBottomSheet(
+        controller: SolidController(),
+        maxHeight: 200,
+        showOnAppear: false,
+        toggleVisibilityOnTap: true,
+        headerBar: Container(
+          decoration: new BoxDecoration(
+              color: Color.fromRGBO(3, 45, 69, .9),
+              borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(20),
+                  topRight: const Radius.circular(20))),
+          height: 70,
+          child: Center(
+            child: Text(
+              "details..",
+              style: TextStyle(color: Colors.white, fontSize: 20),
             ),
+          ),
+        ),
+        body: Container(
+          color: Color.fromRGBO(3, 45, 69, .1),
+          padding: EdgeInsets.all(10),
+          child: Column(children: <Widget>[
             Expanded(
-              flex: 1,
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    flex: 1,
-                    child: Text(
-                      'Start:',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Icon(
+                        Icons.person_pin,
+                        size: 40,
+                      ),
                     ),
                   ),
                   Expanded(
-                    flex: 2,
-                    child: Text('${_truckRequest.from}'),
-                  )
+                    flex: 3,
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        '${_truckRequest.driverName}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
             Expanded(
-              flex: 1,
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    flex: 1,
-                    child: Text('End:',
-                        style: TextStyle(fontWeight: FontWeight.bold)),
+              child: Row(children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Icon(
+                          Icons.pin_drop,
+                          size: 40,
+                          color: Color.fromRGBO(0, 72, 26, 1),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text(
+                          '${_truckRequest.from}',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      )
+                    ],
                   ),
-                  Expanded(
-                    flex: 2,
-                    child: Text('${_truckRequest.to}'),
-                  )
-                ],
-              ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Icon(
+                          Icons.pin_drop,
+                          size: 40,
+                          color: Color.fromRGBO(122, 0, 10, 1),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Text('${_truckRequest.to}',
+                            style: TextStyle(fontSize: 15)),
+                      )
+                    ],
+                  ),
+                ),
+              ]),
             ),
             Expanded(
-                flex: 8,
-                child: GoogleMap(
-                  mapType: MapType.normal,
-                  initialCameraPosition: CameraPosition(
-                    target: LatLng(30.0355, 31.2230),
-                    zoom: 14.4746,
-                  ),
-                  onMapCreated: (googleMapController) {
-                    controller = googleMapController;
-                    trackCarLocation();
-                    setMarkers();
-                  },
-                  markers: Set<Marker>.of(markers.values),
-                  myLocationButtonEnabled: false,
-                ))
-          ],
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.max,
+                  children: <Widget>[
+                    Expanded(
+                      flex: 1,
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Icon(
+                          Icons.directions_car,
+                          size: 40,
+                        ),
+                      ),
+                    ), Expanded(flex: 5,
+                    child: Text('${_truckRequest.model} - ${_truckRequest.chassis}', style: TextStyle(fontSize: 14) ))
+                  ],
+                ),
+              ),
+            )
+          ]),
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: animateCamera,
-        label: Text('Locations'),
+        backgroundColor: Color.fromRGBO(0, 46, 72, 0.8),
+        label: Text('Re-center'),
         icon: Icon(Icons.location_on),
       ),
     );

@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:provider/provider.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -129,55 +128,101 @@ class MapScreenState extends State<MapScreen> {
     //     .then((onValue) {
     //   truckIcon = onValue;
     // });
+    try {
+      fromLat = _truckRequest.startLatt;
+    } catch (e) {
+      fromLat = 0;
+    }
 
-    fromLat = _truckRequest.startLatt;
-    fromLng = _truckRequest.startLong;
-    LatLng fromPosition = LatLng(fromLat, fromLng);
+    try {
+      fromLng = _truckRequest.startLong;
+    } catch (e) {
+      fromLng = 0;
+    }
+    String fromTitle = "";
+    try {
+      fromTitle = _truckRequest.from;
+    } catch (e) {
+      fromTitle = "";
+    }
+    LatLng fromPosition;
+    try {
+      fromPosition = LatLng(fromLat, fromLng);
+    } catch (e) {
+      fromPosition = LatLng(0, 0);
+    }
     Marker markerFrom = Marker(
       markerId: fromMarkerID,
       position: fromPosition,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
       infoWindow: InfoWindow(
-        title: _truckRequest.from,
+        title: fromTitle,
       ),
     );
 
-    toLat = _truckRequest.endLatt;
-    toLng = _truckRequest.endLong;
-    LatLng toPosition = LatLng(toLat, toLng);
+    try {
+      toLat = _truckRequest.endLatt;
+    } catch (e) {
+      toLat = 0;
+    }
+    try {
+      toLng = _truckRequest.endLong;
+    } catch (e) {
+      toLng = 0;
+    }
+    String toTitle = "";
+    try {
+      toTitle = _truckRequest.to;
+    } catch (e) {
+      toTitle = "";
+    }
+    LatLng toPosition;
+    try {
+      toPosition = LatLng(toLat, toLng);
+    } catch (e) {
+      toPosition = LatLng(0, 0);
+    }
     Marker markerTo = Marker(
       markerId: toMarkerID,
       position: toPosition,
       infoWindow: InfoWindow(
-        title: _truckRequest.to,
+        title: toTitle,
       ),
     );
 
     setState(() {
-      markers[fromMarkerID] = markerFrom;
-      markers[toMarkerID] = markerTo;
-      animateCamera();
+      try {
+        markers[fromMarkerID] = markerFrom;
+      } catch (e) {}
+      try {
+        markers[toMarkerID] = markerTo;
+      } catch (e) {}
+
+      try {
+        animateCamera();
+      } catch (e) {}
     });
   }
 
   void intializeTruckMarker() async {
     final Uint8List trackIcon =
         await getBytesFromAsset('assets/images/track_icon.png', 70);
-
-    truckMarker = Marker(
-      markerId: truckMarkerID,
-      position: truckMarkerPosition,
-      infoWindow: InfoWindow(
-        title: "Truck Pos.",
-      ),
-      icon: BitmapDescriptor.fromBytes(trackIcon),
-    );
+    try {
+      truckMarker = Marker(
+        markerId: truckMarkerID,
+        position: truckMarkerPosition,
+        infoWindow: InfoWindow(
+          title: "Truck Pos.",
+        ),
+        icon: BitmapDescriptor.fromBytes(trackIcon),
+      );
+    } catch (e) {}
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    markers.clear();
     intializeTruckMarker();
   }
 
@@ -191,19 +236,15 @@ class MapScreenState extends State<MapScreen> {
         .reference()
         .child('lat');
     dbrLat.onValue.listen((Event event) {
-      setState(() {
-        truckLat = parseDouble(event.snapshot.value.toString());
-
-        if (truckLat != null) {
-          truckMarkerPosition = LatLng(truckLat, truckLng);
-
-          Marker truckMarker2 =
-              truckMarker.copyWith(positionParam: truckMarkerPosition);
-
+      truckLat = parseDouble(event.snapshot.value.toString());
+      if (truckLat != null) {
+        truckMarkerPosition = LatLng(truckLat, truckLng);
+        Marker truckMarker2 =
+            truckMarker.copyWith(positionParam: truckMarkerPosition);
+        setState(() {
           markers[truckMarkerID] = truckMarker2;
-          // print("Lat : $truckLat");
-        }
-      });
+        });
+      }
     });
 
     DatabaseReference dbrLng = fbdb
@@ -214,17 +255,15 @@ class MapScreenState extends State<MapScreen> {
         .reference()
         .child('lng');
     dbrLng.onValue.listen((Event event) {
-      setState(() {
-        truckLng = parseDouble(event.snapshot.value.toString());
-        if (truckLng != null) {
-          truckMarkerPosition = LatLng(truckLat, truckLng);
-          Marker truckMarker2 =
-              truckMarker.copyWith(positionParam: truckMarkerPosition);
-
+      truckLng = parseDouble(event.snapshot.value.toString());
+      if (truckLng != null) {
+        truckMarkerPosition = LatLng(truckLat, truckLng);
+        Marker truckMarker2 =
+            truckMarker.copyWith(positionParam: truckMarkerPosition);
+        setState(() {
           markers[truckMarkerID] = truckMarker2;
-          // print("Lng : $truckLng");
-        }
-      });
+        });
+      }
     });
   }
 

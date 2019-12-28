@@ -63,7 +63,7 @@ class Requests with ChangeNotifier {
 
         return tmp;      
       }
-      return new TruckRequest();;
+      return new TruckRequest();
   }
 
    Future<void> initHeaders() async {

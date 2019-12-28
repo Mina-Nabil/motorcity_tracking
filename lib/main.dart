@@ -5,7 +5,6 @@ import './providers/requests.dart';
 import './providers/auth.dart';
 import './screens/home.dart';
 import './screens/login.dart';
-import './screens/map.dart';
 import './screens/settings.dart';
 
 void main() => runApp(MyApp());
@@ -26,7 +25,6 @@ class MyApp extends StatelessWidget {
             LoginScreen.routeName: (context) => LoginScreen(),
             HomeScreen.routeName: (context) => HomeScreen(),
             SettingsScreen.routeName: (context) => SettingsScreen(),
-            MapScreen.routeName: (context) => MapScreen()
           },
           theme: ThemeData(
             fontFamily: 'NotoSerif',

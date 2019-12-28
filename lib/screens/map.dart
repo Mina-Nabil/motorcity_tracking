@@ -39,7 +39,8 @@ Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 class MapScreen extends StatefulWidget {
   static String routeName = "MapScreen";
 
-  MapScreen() {
+  MapScreen(String id) {
+    _id=id;
     _truckRequest = new TruckRequest();
   }
 
@@ -117,7 +118,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
 
   void setMarkers() async {
     //Initializing Request Object
-    _id = ModalRoute.of(context).settings.arguments;
+    //_id = ModalRoute.of(context).settings.arguments;
     _truckRequest = await Provider.of<Requests>(context).getFullRequest(_id);
 
     // BitmapDescriptor truckIcon;
@@ -292,8 +293,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
             )),
       ]),
       bottomSheet: SolidBottomSheet(
-        controller: SolidController(),
-        maxHeight: 200,
+        maxHeight: MediaQuery.of(context).size.height/4,
         showOnAppear: false,
         toggleVisibilityOnTap: true,
         headerBar: Container(

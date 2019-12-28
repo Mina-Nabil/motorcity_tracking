@@ -156,6 +156,7 @@ class MapScreenState extends State<MapScreen> {
     setState(() {
       markers[fromMarkerID] = markerFrom;
       markers[toMarkerID] = markerTo;
+      animateCamera();
     });
   }
 
@@ -288,9 +289,8 @@ class MapScreenState extends State<MapScreen> {
                   ),
                   onMapCreated: (googleMapController) {
                     controller = googleMapController;
-                    setMarkers();
                     trackCarLocation();
-                    animateCamera();
+                    setMarkers();
                   },
                   markers: Set<Marker>.of(markers.values),
                   myLocationButtonEnabled: false,

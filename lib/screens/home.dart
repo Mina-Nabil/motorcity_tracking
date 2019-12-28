@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:motorcity_tracking/providers/requests.dart';
@@ -8,6 +9,7 @@ import 'package:motorcity_tracking/screens/login.dart';
 import 'package:motorcity_tracking/providers/auth.dart';
 
 //Home Screen with all in-pending requests
+bool _isLoading = true;
 
 class HomeScreen extends StatefulWidget {
   static const String routeName = "/home";
@@ -17,33 +19,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  bool _isLoading = true;
-
   List<MenuData> menuDataList = [];
 
-  _refreshPage(BuildContext context){
-
+  _refreshPage(BuildContext context) {
     return Provider.of<Requests>(context).loadRequests(force: true);
-
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     menuDataList = [
       //Settings Menu Item
-      new MenuData(Icons.settings, (context, menuData){
+      new MenuData(Icons.refresh, (context, menuData) {
+       _refreshPage(context);
+      }, labelText: "Refresh"),
+      //Settings Menu Item
+      new MenuData(Icons.settings, (context, menuData) {
         Navigator.of(context).pushNamed(SettingsScreen.routeName);
-      },
-      labelText: "Settings"),
-    //Logout Menu Item
-    new MenuData(Icons.lock_outline, (context, menuData){
+      }, labelText: "Settings"),
+      //Logout Menu Item
+      new MenuData(Icons.lock_outline, (context, menuData) {
         Provider.of<Auth>(context).logout();
         Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
-    }, labelText: "Logout"),
-    
+      }, labelText: "Logout"),
     ];
   }
+
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
@@ -58,26 +59,53 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Text("In-Progess"),
       ),
       floatingActionButton: new FabMenu(
-          menus: menuDataList,
-          maskColor: Colors.black,
-        ),
-        floatingActionButtonLocation: fabMenuLocation,
+        menus: menuDataList,
+        maskColor: Colors.black,
+      ),
+      floatingActionButtonLocation: fabMenuLocation,
       body: RefreshIndicator(
-            onRefresh: () => _refreshPage(context),
-              child: Center(
+        onRefresh: () => _refreshPage(context),
+        child: Center(
           child: Container(
             child: (_isLoading)
                 ? CircularProgressIndicator()
                 : Consumer<Requests>(
-                    builder: (context, requestsProv, _){
-                      return ListView(
-                      children: requestsProv.requests.map((tmp){
-                        return RequestItem(tmp);
-                      }).toList()
-                    );
+                    builder: (context, requestsProv, _) {
+                      if (requestsProv.requests.length > 0) {
+                        return ListView(
+                            children: requestsProv.requests.map((tmp) {
+                          return RequestItem(tmp);
+                        }).toList());
+                      } else {
+                        return SingleChildScrollView(
+                          child: Container(
+                            height: MediaQuery.of(context).size.height - 80,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Flexible(
+                                  flex: 8,
+                                  child: Opacity(
+                                    opacity: 0.2,
+                                    child: Image.asset(
+                                        "assets/images/noRequests.png"),
+                                  ),
+                                ),
+                                Flexible(
+                                    flex: 3,
+                                    child: Container(
+                                      alignment: Alignment.topCenter,
+                                      child: Opacity(
+                                          opacity: 0.4,
+                                          child: Text("...no requests...")),
+                                    ))
+                              ],
+                            ),
+                          ),
+                        );
+                      }
                     },
-     
-                ),
+                  ),
           ),
         ),
       ),

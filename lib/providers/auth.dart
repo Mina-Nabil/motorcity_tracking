@@ -29,7 +29,7 @@ class Auth with ChangeNotifier {
 
   Future<int> login(String user, String password) async {
     _serverIP = await FlutterKeychain.get(key: "serverIP");
-
+    _serverIP = (_serverIP) ?? "3.121.234.234";
     try {
       final serverURL = _serverInit + _serverIP + _serverExt;
       final response = await http.post(serverURL + _login,

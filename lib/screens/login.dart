@@ -53,8 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     
-    var newLogin = Builder(
-        builder: (context) => Container(
+    var newLogin =  Container(
             color: Color.fromRGBO(0,46,72,0.5),
             child: Center(
               child: ListView(
@@ -124,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   )
                 ],
               ),
-            )));
+            ));
 
     return Scaffold(
         floatingActionButton: new FabMenu(

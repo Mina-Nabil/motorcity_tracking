@@ -20,6 +20,7 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
+          debugShowCheckedModeBanner: false,
           title: 'Truck Tracker',
           routes: {
             LoginScreen.routeName: (context) => LoginScreen(),

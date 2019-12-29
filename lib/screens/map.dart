@@ -36,6 +36,9 @@ MarkerId fromMarkerID = MarkerId("from");
 MarkerId toMarkerID = MarkerId("to");
 Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
+//bottom sheet flag
+bool _bottomSheetVisible = false;
+
 class MapScreen extends StatefulWidget {
   static String routeName = "MapScreen";
 
@@ -246,9 +249,11 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         truckMarkerPosition = LatLng(truckLat, truckLng);
         Marker truckMarker2 =
             truckMarker.copyWith(positionParam: truckMarkerPosition);
-        setState(() {
-          markers[truckMarkerID] = truckMarker2;
-        });
+        if (mounted) {
+          setState(() {
+            markers[truckMarkerID] = truckMarker2;
+          });
+        }
       }
     });
 
@@ -265,14 +270,23 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         truckMarkerPosition = LatLng(truckLat, truckLng);
         Marker truckMarker2 =
             truckMarker.copyWith(positionParam: truckMarkerPosition);
-        setState(() {
-          markers[truckMarkerID] = truckMarker2;
-        });
+        if (mounted) {
+          setState(() {
+            markers[truckMarkerID] = truckMarker2;
+          });
+        }
       }
     });
   }
 
   //build bottom sheet
+  void showBottomSheet() {
+    _bottomSheetVisible = true;
+  }
+
+  void hideBottomSheet() {
+    _bottomSheetVisible = false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -297,8 +311,10 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         )),
       ]),
       bottomSheet: SolidBottomSheet(
+        onShow: showBottomSheet,
+        onHide: hideBottomSheet,
         maxHeight: MediaQuery.of(context).size.height / 4,
-        showOnAppear: false,
+        showOnAppear: _bottomSheetVisible,
         toggleVisibilityOnTap: true,
         headerBar: Container(
           decoration: new BoxDecoration(

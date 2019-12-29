@@ -19,7 +19,7 @@ class TruckRequest {
   String driverID;
 
 
-  TruckRequest({id, from, to, reqDate, startDate, chassis, model, km, status, comment, startLong, startLatt, endLong, endLatt,}) {
+  TruckRequest({id, from, to, reqDate, startDate, chassis, model, km, status, comment, startLong, startLatt, endLong, endLatt,driverName}) {
     this.id = id ?? "0";
     this.from = from ?? "N/A";
     this.to = to ?? "N/A";
@@ -35,6 +35,7 @@ class TruckRequest {
     this.endLong =    (endLong != null)   ? double.parse(endLong)   : 0;
     this.endLatt =    (endLatt != null)   ? double.parse(endLatt)   : 0;
     this.driverID = driverID ?? "N/A";
+    this.driverName = driverName ?? "N/A";
   }
 
   TruckRequest.fromJson(Map<String, dynamic> response) {

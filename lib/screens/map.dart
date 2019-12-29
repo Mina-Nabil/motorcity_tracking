@@ -19,7 +19,7 @@ GoogleMapController controller;
 //Request Variables
 TruckRequest _truckRequest;
 String _id;
-String _driverID = "1";
+String _driverID;
 
 //Tracking Variables
 double truckLat = 0;
@@ -40,7 +40,7 @@ class MapScreen extends StatefulWidget {
   static String routeName = "MapScreen";
 
   MapScreen(String id) {
-    _id=id;
+    _id = id;
     _truckRequest = new TruckRequest();
   }
 
@@ -120,88 +120,94 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     //Initializing Request Object
     //_id = ModalRoute.of(context).settings.arguments;
     _truckRequest = await Provider.of<Requests>(context).getFullRequest(_id);
+    if (_truckRequest != null) {
+      _driverID = _truckRequest.driverID;
+      intializeTruckMarker();
 
-    // BitmapDescriptor truckIcon;
+      trackCarLocation();
 
-    // BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
-    //         'assets/images/track_icon.png')
-    //     .then((onValue) {
-    //   truckIcon = onValue;
-    // });
-    try {
-      fromLat = _truckRequest.startLatt;
-    } catch (e) {
-      fromLat = 0;
-    }
+      // BitmapDescriptor truckIcon;
 
-    try {
-      fromLng = _truckRequest.startLong;
-    } catch (e) {
-      fromLng = 0;
-    }
-    String fromTitle = "";
-    try {
-      fromTitle = _truckRequest.from;
-    } catch (e) {
-      fromTitle = "";
-    }
-    LatLng fromPosition;
-    try {
-      fromPosition = LatLng(fromLat, fromLng);
-    } catch (e) {
-      fromPosition = LatLng(0, 0);
-    }
-    Marker markerFrom = Marker(
-      markerId: fromMarkerID,
-      position: fromPosition,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-      infoWindow: InfoWindow(
-        title: fromTitle,
-      ),
-    );
-
-    try {
-      toLat = _truckRequest.endLatt;
-    } catch (e) {
-      toLat = 0;
-    }
-    try {
-      toLng = _truckRequest.endLong;
-    } catch (e) {
-      toLng = 0;
-    }
-    String toTitle = "";
-    try {
-      toTitle = _truckRequest.to;
-    } catch (e) {
-      toTitle = "";
-    }
-    LatLng toPosition;
-    try {
-      toPosition = LatLng(toLat, toLng);
-    } catch (e) {
-      toPosition = LatLng(0, 0);
-    }
-    Marker markerTo = Marker(
-      markerId: toMarkerID,
-      position: toPosition,
-      infoWindow: InfoWindow(
-        title: toTitle,
-      ),
-    );
-
-    setState(() {
+      // BitmapDescriptor.fromAssetImage(ImageConfiguration(size: Size(48, 48)),
+      //         'assets/images/track_icon.png')
+      //     .then((onValue) {
+      //   truckIcon = onValue;
+      // });
       try {
-        markers[fromMarkerID] = markerFrom;
-      } catch (e) {}
-      try {
-        markers[toMarkerID] = markerTo;
-      } catch (e) {}
+        fromLat = _truckRequest.startLatt;
+      } catch (e) {
+        fromLat = 0;
+      }
 
       try {
-        animateCamera();
-      } catch (e) {}
-    });
+        fromLng = _truckRequest.startLong;
+      } catch (e) {
+        fromLng = 0;
+      }
+      String fromTitle = "";
+      try {
+        fromTitle = _truckRequest.from;
+      } catch (e) {
+        fromTitle = "";
+      }
+      LatLng fromPosition;
+      try {
+        fromPosition = LatLng(fromLat, fromLng);
+      } catch (e) {
+        fromPosition = LatLng(0, 0);
+      }
+      Marker markerFrom = Marker(
+        markerId: fromMarkerID,
+        position: fromPosition,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+        infoWindow: InfoWindow(
+          title: fromTitle,
+        ),
+      );
+
+      try {
+        toLat = _truckRequest.endLatt;
+      } catch (e) {
+        toLat = 0;
+      }
+      try {
+        toLng = _truckRequest.endLong;
+      } catch (e) {
+        toLng = 0;
+      }
+      String toTitle = "";
+      try {
+        toTitle = _truckRequest.to;
+      } catch (e) {
+        toTitle = "";
+      }
+      LatLng toPosition;
+      try {
+        toPosition = LatLng(toLat, toLng);
+      } catch (e) {
+        toPosition = LatLng(0, 0);
+      }
+      Marker markerTo = Marker(
+        markerId: toMarkerID,
+        position: toPosition,
+        infoWindow: InfoWindow(
+          title: toTitle,
+        ),
+      );
+
+      setState(() {
+        try {
+          markers[fromMarkerID] = markerFrom;
+        } catch (e) {}
+        try {
+          markers[toMarkerID] = markerTo;
+        } catch (e) {}
+
+        try {
+          animateCamera();
+        } catch (e) {}
+      });
+    }
   }
 
   void intializeTruckMarker() async {
@@ -212,7 +218,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         markerId: truckMarkerID,
         position: truckMarkerPosition,
         infoWindow: InfoWindow(
-          title: "Truck Pos.",
+          title: "${_truckRequest.driverName}",
         ),
         icon: BitmapDescriptor.fromBytes(trackIcon),
       );
@@ -223,7 +229,6 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     markers.clear();
-    intializeTruckMarker();
   }
 
   void trackCarLocation() {
@@ -278,22 +283,21 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
       body: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
         Expanded(
             child: GoogleMap(
-              mapType: MapType.normal,
-              initialCameraPosition: CameraPosition(
-                target: LatLng(30.0355, 31.2230),
-                zoom: 14.4746,
-              ),
-              onMapCreated: (googleMapController) {
-                controller = googleMapController;
-                trackCarLocation();
-                setMarkers();
-              },
-              markers: Set<Marker>.of(markers.values),
-              myLocationButtonEnabled: false,
-            )),
+          mapType: MapType.normal,
+          initialCameraPosition: CameraPosition(
+            target: LatLng(30.0355, 31.2230),
+            zoom: 14.4746,
+          ),
+          onMapCreated: (googleMapController) {
+            controller = googleMapController;
+            setMarkers();
+          },
+          markers: Set<Marker>.of(markers.values),
+          myLocationButtonEnabled: false,
+        )),
       ]),
       bottomSheet: SolidBottomSheet(
-        maxHeight: MediaQuery.of(context).size.height/4,
+        maxHeight: MediaQuery.of(context).size.height / 4,
         showOnAppear: false,
         toggleVisibilityOnTap: true,
         headerBar: Container(
@@ -403,8 +407,12 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                           size: 40,
                         ),
                       ),
-                    ), Expanded(flex: 5,
-                    child: Text('${_truckRequest.model} - ${_truckRequest.chassis}', style: TextStyle(fontSize: 14) ))
+                    ),
+                    Expanded(
+                        flex: 5,
+                        child: Text(
+                            '${_truckRequest.model} - ${_truckRequest.chassis}',
+                            style: TextStyle(fontSize: 14)))
                   ],
                 ),
               ),

@@ -43,7 +43,7 @@ class RequestItem extends StatelessWidget {
                                 padding: EdgeInsets.only(left: 15),
                                 child: Text('Request# ${req.id}',
                                     style: TextStyle(
-                                        fontSize: 20,
+                                        fontSize: 19,
                                         fontWeight: FontWeight.bold)),
                               ),
                               Expanded(
@@ -51,6 +51,7 @@ class RequestItem extends StatelessWidget {
                                   alignment: Alignment.topRight,
                                   child: Text(
                                     'since ${req.reqDate}',
+                                    textAlign: TextAlign.right,
                                     style: TextStyle(
                                         fontSize: 12,
                                         color: Colors.black87,
@@ -66,10 +67,10 @@ class RequestItem extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Container(
-                                  width: 70,
+                                  width: 80,
                                   padding: EdgeInsets.only(top: 5, left: 15),
                                   child: Text(
-                                    'Driver: ',
+                                    'Driver:',
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 16),
@@ -92,7 +93,7 @@ class RequestItem extends StatelessWidget {
                             child: Row(
                               children: <Widget>[
                                 Container(
-                                  width: 70,
+                                  width: 80,
                                   padding: EdgeInsets.only(top: 5, left: 15),
                                   child: Text(
                                     'From: ',
@@ -117,7 +118,7 @@ class RequestItem extends StatelessWidget {
                               children: <Widget>[
                                 Container(
                                  padding: EdgeInsets.only(left: 15, top: 5),
-                                 width: 70,
+                                 width: 80,
                                   child: Text(
                                     'To: ',
                                     style: TextStyle(
@@ -136,7 +137,7 @@ class RequestItem extends StatelessWidget {
                           ),
                           Row(children: <Widget>[
                             Container(
-                                width: 70,
+                                width: 80,
                                 padding: EdgeInsets.only(left: 15, top: 5),
                                 child: Text(
                                   "Car: ",

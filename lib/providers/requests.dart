@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 class Requests with ChangeNotifier {
   //Requests Provider
   final _serverInit = "http://";
-  String _serverIP = "3.121.234.234";
+  String _serverIP ;
   final String _serverExt = "/motorcity/api/";
   final String _requestsExt = "requests/inprogress";
   final String _requestsDet = "request/details";
@@ -36,6 +36,7 @@ class Requests with ChangeNotifier {
     if (force || _requests.length == 0) {
       _requests = [];
       if(_requestHeaders['token']==null || _requestHeaders['userType']==null) await initHeaders();
+      if(_serverIP==null) _serverIP = await FlutterKeychain.get(key: "serverIP");
       var response =
           await http.get(_serverInit + _serverIP + _serverExt + _requestsExt, headers: _requestHeaders);
       if (response.statusCode == 200) {
@@ -53,6 +54,7 @@ class Requests with ChangeNotifier {
   Future<TruckRequest> getFullRequest(id) async {
       TruckRequest tmp ;
       if(_requestHeaders['token']==null || _requestHeaders['userType']==null) await initHeaders();
+      if(_serverIP==null) _serverIP = await FlutterKeychain.get(key: "serverIP");
       var response =
           await http.post(_serverInit + _serverIP + _serverExt + _requestsDet, 
           headers: _requestHeaders, body: {"RequestID":id});

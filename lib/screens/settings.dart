@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import 'package:flutter/services.dart';
 import 'package:motorcity_tracking/providers/requests.dart';
+import 'package:motorcity_tracking/providers/auth.dart';
 import 'package:provider/provider.dart';
 
 

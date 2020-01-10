@@ -5,7 +5,7 @@ import "package:flutter_keychain/flutter_keychain.dart";
 
 class Auth with ChangeNotifier {
   final _serverInit = "http://";
-  String _serverIP = "3.121.234.234";
+  String _serverIP ;
   final String _serverExt = "/motorcity/api/";
   final String _login = "managerlogin";
   final String _authToken = "checkauth";
@@ -17,21 +17,11 @@ class Auth with ChangeNotifier {
     return _isAuthenticated;
   }
 
-  Auth() {
-    Future.delayed(Duration.zero).then((_) async {
-      String tmpServerUrl = await FlutterKeychain.get(key: "serverIP");
-      if (tmpServerUrl != null)
-        _serverIP = tmpServerUrl;
-      else
-        FlutterKeychain.put(key: "serverIP", value: _serverIP);
-    });
-  }
-
   Future<int> login(String user, String password) async {
     _serverIP = await FlutterKeychain.get(key: "serverIP");
-    _serverIP = (_serverIP) ?? "3.121.234.234";
+    String loginIP = (_serverIP) ?? "3.121.234.234";
     try {
-      final serverURL = _serverInit + _serverIP + _serverExt;
+      final serverURL = _serverInit + loginIP + _serverExt;
       final response = await http.post(serverURL + _login,
           body: {"MNGRName": user, "MNGRPass": password});
       if (response.statusCode == 200) {
@@ -44,6 +34,8 @@ class Auth with ChangeNotifier {
           await FlutterKeychain.put(key: "userName", value: user);
           await FlutterKeychain.put(key: "token", value: token);
           await FlutterKeychain.put(key: "userType", value: "manager");
+          await FlutterKeychain.put(key: "serverIP", value: "3.121.234.234");
+          _serverIP = "3.121.234.234";
           initHeaders();
           return 1; //Login Success
         } else
@@ -57,6 +49,7 @@ class Auth with ChangeNotifier {
   }
 
   Future<bool> checkToken(token) async {
+    if(_serverIP != null)
     try {
       final serverURL = _serverInit + _serverIP + _serverExt;
       await initHeaders();

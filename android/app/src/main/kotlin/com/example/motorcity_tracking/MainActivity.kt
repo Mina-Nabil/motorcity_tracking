@@ -1,4 +1,4 @@
-package com.example.motorcity_tracking
+package app.msquare.motorcitytracker
 
 import android.os.Bundle
 

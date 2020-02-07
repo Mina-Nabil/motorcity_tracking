@@ -1,4 +1,4 @@
-import 'package:flutter_page_transition/flutter_page_transition.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:motorcity_tracking/models/truckrequest.dart';
 
 import 'package:flutter/material.dart';
@@ -16,7 +16,7 @@ class RequestItem extends StatelessWidget {
         color: (req.status == '1') ? Colors.green[100] : Colors.blue[50],
         child: FlatButton(
             onPressed: () => Navigator
-                .push(context,  PageTransition( child: MapScreen(req.id), type: PageTransitionType.slideParallaxRight, duration: Duration(milliseconds: 600)) ),
+                .push(context,  PageTransition( child: MapScreen(req.id), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 600)) ),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(5),

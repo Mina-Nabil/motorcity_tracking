@@ -122,7 +122,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   void setMarkers() async {
     //Initializing Request Object
     //_id = ModalRoute.of(context).settings.arguments;
-    _truckRequest = await Provider.of<Requests>(context).getFullRequest(_id);
+    _truckRequest = await Provider.of<Requests>(context, listen: false).getFullRequest(_id);
     if (_truckRequest != null) {
       _driverID = _truckRequest.driverID;
       intializeTruckMarker();

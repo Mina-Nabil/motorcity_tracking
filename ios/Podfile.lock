@@ -1,4 +1,6 @@
 PODS:
+  - android_intent (0.0.1):
+    - Flutter
   - Firebase/Core (6.8.0):
     - Firebase/CoreOnly
     - FirebaseAnalytics (= 6.1.1)
@@ -47,7 +49,15 @@ PODS:
   - Flutter (1.0.0)
   - flutter_keychain (0.0.1):
     - Flutter
+  - flutter_plugin_android_lifecycle (0.0.1):
+    - Flutter
   - fluttertoast (0.0.2):
+    - Flutter
+  - geolocator (5.2.1):
+    - Flutter
+  - google_api_availability (2.0.2):
+    - Flutter
+  - google_map_location_picker (2.1.1):
     - Flutter
   - google_maps_flutter (0.0.1):
     - Flutter
@@ -86,20 +96,31 @@ PODS:
   - GoogleUtilities/UserDefaults (6.2.5):
     - GoogleUtilities/Logger
   - leveldb-library (1.22)
+  - "location_permissions (2.0.4+1)":
+    - Flutter
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - package_info (0.0.1):
+    - Flutter
 
 DEPENDENCIES:
+  - android_intent (from `.symlinks/plugins/android_intent/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_core_web (from `.symlinks/plugins/firebase_core_web/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
   - Flutter (from `Flutter`)
   - flutter_keychain (from `.symlinks/plugins/flutter_keychain/ios`)
+  - flutter_plugin_android_lifecycle (from `.symlinks/plugins/flutter_plugin_android_lifecycle/ios`)
   - fluttertoast (from `.symlinks/plugins/fluttertoast/ios`)
+  - geolocator (from `.symlinks/plugins/geolocator/ios`)
+  - google_api_availability (from `.symlinks/plugins/google_api_availability/ios`)
+  - google_map_location_picker (from `.symlinks/plugins/google_map_location_picker/ios`)
   - google_maps_flutter (from `.symlinks/plugins/google_maps_flutter/ios`)
+  - location_permissions (from `.symlinks/plugins/location_permissions/ios`)
+  - package_info (from `.symlinks/plugins/package_info/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -120,6 +141,8 @@ SPEC REPOS:
     - nanopb
 
 EXTERNAL SOURCES:
+  android_intent:
+    :path: ".symlinks/plugins/android_intent/ios"
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   firebase_core_web:
@@ -130,12 +153,25 @@ EXTERNAL SOURCES:
     :path: Flutter
   flutter_keychain:
     :path: ".symlinks/plugins/flutter_keychain/ios"
+  flutter_plugin_android_lifecycle:
+    :path: ".symlinks/plugins/flutter_plugin_android_lifecycle/ios"
   fluttertoast:
     :path: ".symlinks/plugins/fluttertoast/ios"
+  geolocator:
+    :path: ".symlinks/plugins/geolocator/ios"
+  google_api_availability:
+    :path: ".symlinks/plugins/google_api_availability/ios"
+  google_map_location_picker:
+    :path: ".symlinks/plugins/google_map_location_picker/ios"
   google_maps_flutter:
     :path: ".symlinks/plugins/google_maps_flutter/ios"
+  location_permissions:
+    :path: ".symlinks/plugins/location_permissions/ios"
+  package_info:
+    :path: ".symlinks/plugins/package_info/ios"
 
 SPEC CHECKSUMS:
+  android_intent: f144b3783d533cc5bc2cd04cdbd1dc2b6950bd69
   Firebase: c35912a5c160193dc423f260dac3f167a1a795ab
   firebase_core: 87e4c7cef68de46c0326ce2ee907fc7e365ead7e
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
@@ -149,7 +185,11 @@ SPEC CHECKSUMS:
   FirebaseInstanceID: 88932a31aba5a56cfd3a7541706436c71f7f4598
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_keychain: 01aabf894ffe8b01adfda1d9df21c210c1b4b452
+  flutter_plugin_android_lifecycle: 47de533a02850f070f5696a623995e93eddcdb9b
   fluttertoast: b644586ef3b16f67fae9a1f8754cef6b2d6b634b
+  geolocator: a048cc412bf350b17d671d170f151b0c9fb8f098
+  google_api_availability: 6f1017d3a61be12be3bd9f929cc5b2606f24ae7f
+  google_map_location_picker: 01403f2fb025f6aedf0b36b5f15eccc9415a55f1
   google_maps_flutter: d0dd62f5a7d39bae61057eb9f52dd778d99c7c6c
   GoogleAppMeasurement: 86a82f0e1f20b8eedf8e20326530138fd71409de
   GoogleDataTransport: 8f9897b8e073687f24ca8d3c3a8013dec7d2d1cc
@@ -157,7 +197,9 @@ SPEC CHECKSUMS:
   GoogleMaps: f79af95cb24d869457b1f961c93d3ce8b2f3b848
   GoogleUtilities: e7dc37039b19df7fe543479d3e4a02ac8d11bb69
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
+  location_permissions: 360d12ecd1c94a4cab68585f508be1d5ad944c8b
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
 
 PODFILE CHECKSUM: 1b66dae606f75376c5f2135a8290850eeb09ae83
 

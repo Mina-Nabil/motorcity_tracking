@@ -4,7 +4,7 @@ import 'package:motorcity_tracking/screens/home.dart';
 import 'package:provider/provider.dart';
 import "package:fab_menu/fab_menu.dart";
 import 'package:motorcity_tracking/screens/settings.dart';
-import 'package:flutter_page_transition/flutter_page_transition.dart';
+import 'package:page_transition/page_transition.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String routeName = "/login";
@@ -39,9 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
     this.username = LoginScreen._user.text;
     this.password = LoginScreen._pass.text;
 
-    Provider.of<Auth>(context).login(username, password).then((response) {
+    Provider.of<Auth>(context, listen: false).login(username, password).then((response) {
       if (response == 1) {
-        Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.transferRight, duration: Duration(milliseconds: 500), child: HomeScreen()));
+        Navigator.pushReplacement(context, PageTransition(type: PageTransitionType.fade, child: HomeScreen(), duration: Duration(milliseconds: 500)));
       } else if (response == 0) {
         _showLoginFailed("Invalid data, please check user/pass", context);
       } else {

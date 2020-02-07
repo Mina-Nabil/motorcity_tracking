@@ -14,7 +14,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     
-    Provider.of<Requests>(context).getServerIP().then((tmp){
+    Provider.of<Requests>(context, listen: false).getServerIP().then((tmp){
       _mg.text = tmp;
     });
 
@@ -60,7 +60,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: ()  {
-                    Provider.of<Requests>(context).serverIP=_mg.text;
+                    Provider.of<Requests>(context, listen: false).serverIP=_mg.text;
                     Navigator.pop(context2);
                   }
                 ),

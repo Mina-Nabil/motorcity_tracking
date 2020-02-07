@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:motorcity_tracking/providers/formData.dart';
 import 'package:provider/provider.dart';
 
 import './providers/requests.dart';
 import './providers/auth.dart';
 import './screens/home.dart';
 import './screens/login.dart';
+import './screens/newRequest.dart';
 import './screens/settings.dart';
 
 void main() => runApp(MyApp());
@@ -16,7 +18,8 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider.value(value: Auth()),
-        ChangeNotifierProvider.value(value: Requests())
+        ChangeNotifierProvider.value(value: Requests()),
+        ChangeNotifierProvider.value(value: FormDataProvider())
       ],
       child: Consumer<Auth>(
         builder: (context, auth, _) => MaterialApp(
@@ -25,6 +28,7 @@ class MyApp extends StatelessWidget {
           routes: {
             LoginScreen.routeName: (context) => LoginScreen(),
             HomeScreen.routeName: (context) => HomeScreen(),
+            NewRequestScreen.routeName: (context) => NewRequestScreen(),
             SettingsScreen.routeName: (context) => SettingsScreen(),
           },
           theme: ThemeData(

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:page_transition/page_transition.dart';
+import 'package:motorcity_tracking/screens/newRequest.dart';
 import 'package:provider/provider.dart';
 import 'package:motorcity_tracking/providers/requests.dart';
 import 'package:motorcity_tracking/widgets/request.dart';
@@ -21,7 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   List<MenuData> menuDataList = [];
 
   _refreshPage(BuildContext context) {
-    return Provider.of<Requests>(context).loadRequests(force: true);
+    return Provider.of<Requests>(context, listen: false).loadRequests(force: true);
   }
 
   @override
@@ -32,13 +34,17 @@ class _HomeScreenState extends State<HomeScreen> {
       new MenuData(Icons.refresh, (context, menuData) {
        _refreshPage(context);
       }, labelText: "Refresh"),
+      //New Request Menu Item
+      new MenuData(Icons.add_location, (context, menuData) {
+        Navigator.push(context,  PageTransition( child: NewRequestScreen(), type: PageTransitionType.upToDown, duration: Duration(milliseconds: 500)) );
+      }, labelText: "New Request"),
       //Settings Menu Item
       new MenuData(Icons.settings, (context, menuData) {
         Navigator.of(context).pushNamed(SettingsScreen.routeName);
       }, labelText: "Settings"),
       //Logout Menu Item
       new MenuData(Icons.lock_outline, (context, menuData) {
-        Provider.of<Auth>(context).logout();
+        Provider.of<Auth>(context, listen: false).logout();
         Navigator.of(context).pushReplacementNamed(LoginScreen.routeName);
       }, labelText: "Logout"),
     ];

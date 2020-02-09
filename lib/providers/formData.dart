@@ -89,7 +89,7 @@ class FormDataProvider with ChangeNotifier {
   }
 
   Future<bool> loadModels() async {
-    drivers = [];
+    models = [];
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
@@ -182,12 +182,7 @@ class FormDataProvider with ChangeNotifier {
                   'title': 'New Request Added'
                 },
                 'priority': 'high',
-                'data': <String, dynamic>{
-                  'click_action': 'FLUTTER_NOTIFICATION_CLICK',
-                  'id': '1',
-                  'status': 'done'
-                },
-                'to': "/topic/all",
+                'to': "/topics/all",
               },
             ),
           );

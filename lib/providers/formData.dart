@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import '../models/location.dart';
 import '../models/driver.dart';
 import '../models/model.dart';
-import 'package:flutter_keychain/flutter_keychain.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import "package:http/http.dart" as http;
 
 class FormDataProvider with ChangeNotifier {
@@ -25,17 +25,19 @@ class FormDataProvider with ChangeNotifier {
   Map<String, String> _requestHeaders = {'Accept': 'application/json'};
 
   Future<String> getServerIP() async {
-    String tmpServer = await FlutterKeychain.get(key: "serverIP");
+    final prefs = await SharedPreferences.getInstance();
+    String tmpServer = prefs.get("serverIP");
     return tmpServer ?? _serverIP;
   }
 
   Future<bool> loadDrivers() async {
     drivers = [];
+    final prefs = await SharedPreferences.getInstance();
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
       if (_serverIP == null)
-        _serverIP = await FlutterKeychain.get(key: "serverIP");
+        _serverIP = prefs.get("serverIP");
 
       final request = await http.get(
           _serverInit + _serverIP + _serverExt + _driversReqUrl,
@@ -59,11 +61,12 @@ class FormDataProvider with ChangeNotifier {
 
   Future<bool> loadLocations() async {
     locations = [];
+    final prefs = await SharedPreferences.getInstance();
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
       if (_serverIP == null)
-        _serverIP = await FlutterKeychain.get(key: "serverIP");
+        _serverIP = prefs.get("serverIP");
 
       var request = await http.get(
           _serverInit + _serverIP + _serverExt + _locationsReqUrl,
@@ -90,11 +93,12 @@ class FormDataProvider with ChangeNotifier {
 
   Future<bool> loadModels() async {
     models = [];
+    final prefs = await SharedPreferences.getInstance();
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
       if (_serverIP == null)
-        _serverIP = await FlutterKeychain.get(key: "serverIP");
+        _serverIP = prefs.get("serverIP");
 
       var request = await http.get(
           _serverInit + _serverIP + _serverExt + _modelsReqUrl,
@@ -137,11 +141,12 @@ class FormDataProvider with ChangeNotifier {
       startLatt,
       endLong,
       endLatt}) async {
+        final prefs = await SharedPreferences.getInstance();
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
       if (_serverIP == null)
-        _serverIP = await FlutterKeychain.get(key: "serverIP");
+        _serverIP = prefs.get("serverIP");
       final serverURL = _serverInit + _serverIP + _serverExt;
       final formData = {
         "startLoc": startLocationName,
@@ -199,9 +204,10 @@ class FormDataProvider with ChangeNotifier {
   }
 
   Future<void> initHeaders() async {
+    final prefs = await SharedPreferences.getInstance();
     this._requestHeaders.addAll({
-      "token": await FlutterKeychain.get(key: "token"),
-      "userType": await FlutterKeychain.get(key: "userType")
+      "token": prefs.get("token"),
+      "userType": prefs.get("userType")
     });
   }
 

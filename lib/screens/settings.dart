@@ -59,8 +59,8 @@ class SettingsScreen extends StatelessWidget {
                     fontSize: 18,
                     ),
                   ),
-                  onPressed: ()  {
-                    Provider.of<Requests>(context, listen: false).serverIP=_mg.text;
+                  onPressed: () async {
+                    await Provider.of<Requests>(context, listen: false).setServerIP(_mg.text);
                     Navigator.pop(context2);
                   }
                 ),

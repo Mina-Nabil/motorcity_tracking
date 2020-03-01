@@ -52,9 +52,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void didChangeDependencies() async {
-    super.didChangeDependencies();
     await Provider.of<Requests>(context).loadRequests();
     _isLoading = false;
+    super.didChangeDependencies();
   }
 
   @override

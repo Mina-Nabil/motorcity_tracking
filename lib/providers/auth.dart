@@ -1,7 +1,7 @@
 import 'dart:convert';
 import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
-import "package:flutter_keychain/flutter_keychain.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
 class Auth with ChangeNotifier {
   final _serverInit = "http://";
@@ -18,7 +18,8 @@ class Auth with ChangeNotifier {
   }
 
   Future<int> login(String user, String password) async {
-    _serverIP = await FlutterKeychain.get(key: "serverIP");
+    final prefs = await SharedPreferences.getInstance();
+    _serverIP = prefs.get("serverIP");
     String loginIP = (_serverIP) ?? "3.121.234.234";
     try {
       final serverURL = _serverInit + loginIP + _serverExt;
@@ -30,11 +31,11 @@ class Auth with ChangeNotifier {
         var token = decodedJson['token'];
         if (id != null) {
           _isAuthenticated = true;
-          await FlutterKeychain.put(key: "userID", value: id);
-          await FlutterKeychain.put(key: "userName", value: user);
-          await FlutterKeychain.put(key: "token", value: token);
-          await FlutterKeychain.put(key: "userType", value: "manager");
-          await FlutterKeychain.put(key: "serverIP", value: "3.121.234.234");
+          await prefs.setString("userID", id);
+          await prefs.setString("userName", user);
+          await prefs.setString("token", token);
+          await prefs.setString("userType", "manager");
+          await prefs.setString("serverIP","3.121.234.234");
           _serverIP = "3.121.234.234";
           initHeaders();
           return 1; //Login Success
@@ -64,9 +65,9 @@ class Auth with ChangeNotifier {
   }
 
   Future<bool> isloggedIn() async {
-
-    String id = await FlutterKeychain.get(key: "userID");
-    String token = await FlutterKeychain.get(key: "token");
+    final prefs = await SharedPreferences.getInstance();
+    String id = prefs.get("userID");
+    String token = prefs.get("token");
 
     if (id == null || token == null) 
       return false;
@@ -75,8 +76,9 @@ class Auth with ChangeNotifier {
 
   }
 
-  void logout() {
-    FlutterKeychain.clear();
+  void logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.clear();
   }
 
   String cleanResponse(json) {
@@ -88,9 +90,10 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> initHeaders() async {
+    final prefs = await SharedPreferences.getInstance();
     this._requestHeaders.addAll({
-      "token": await FlutterKeychain.get(key: "token"),
-      "userType": await FlutterKeychain.get(key: "userType")
+      "token": prefs.get("token"),
+      "userType": prefs.get("userType")
     });
   }
 }

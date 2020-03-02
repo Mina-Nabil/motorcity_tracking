@@ -68,11 +68,12 @@ class Auth with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     String id = prefs.get("userID");
     String token = prefs.get("token");
+    String serverIP = prefs.get("serverIP");
 
-    if (id == null || token == null) 
+    if (id == null || token == null || serverIP == null) 
       return false;
 
-    return await checkToken(token);
+    return true;
 
   }
 

@@ -15,8 +15,16 @@ class RequestItem extends StatelessWidget {
         margin: const EdgeInsets.all(5),
         color: (req.status == '1') ? Colors.green[100] : Colors.blue[50],
         child: FlatButton(
-            onPressed: () => Navigator
-                .push(context,  PageTransition( child: MapScreen(req.id), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 600)) ),
+            onPressed: ()  {
+              if(req.status == '2') {
+              Navigator
+                .push(context,  PageTransition( child: MapScreen(req.id), type: PageTransitionType.leftToRight, duration: Duration(milliseconds: 600)) );
+
+              } else {
+                Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Oops! No driver data available, Request is new.")));
+              }
+                
+                } ,
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.all(5),

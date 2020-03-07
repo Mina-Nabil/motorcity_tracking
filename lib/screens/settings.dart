@@ -42,7 +42,7 @@ class SettingsScreen extends StatelessWidget {
                 padding: EdgeInsets.only(top: 10, bottom: 10),
                 child: TextField(
                   controller: _mg,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.numberWithOptions(decimal: true),
                   textAlign: TextAlign.left,
                   onSubmitted: null,
                 ),

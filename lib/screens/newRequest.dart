@@ -35,6 +35,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
 
   final GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
 
+  bool isDisabled = false;
+
   //Drop down list vars
   String _selectedDriver;
   String _selectedModel;
@@ -591,7 +593,8 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white),
                           ),
-                          onPressed: () => submitForm(context),
+                          onPressed:
+                              (!isDisabled) ? () => submitForm(context) : null,
                         )),
                   ],
                 ),
@@ -670,6 +673,10 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
         _showMessage("Please pick a driver!", context);
         return;
       }
+
+      setState(() {
+        isDisabled = true;
+      });
       bool formResult =
           await Provider.of<FormDataProvider>(context, listen: false)
               .postRequest(
@@ -699,18 +706,20 @@ class _NewRequestScreenState extends State<NewRequestScreen> {
                 new FlatButton(
                   child: new Text("OK"),
                   onPressed: () {
-                    Navigator.of(context).popAndPushNamed( HomeScreen.routeName);
+                    Navigator.of(context).popAndPushNamed(HomeScreen.routeName);
                   },
                 ),
               ],
             );
           },
         );
-
       } else {
         _showMessage(
             "We are sorry but Request Failed! Please check your data and try again.",
             context);
+        setState(() {
+          isDisabled = false;
+        });
       }
     }
   }

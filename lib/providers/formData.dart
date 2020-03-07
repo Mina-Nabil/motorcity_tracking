@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../models/location.dart';
 import '../models/driver.dart';
 import '../models/model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import "package:http/http.dart" as http;
 
 class FormDataProvider with ChangeNotifier {
@@ -25,19 +26,23 @@ class FormDataProvider with ChangeNotifier {
   Map<String, String> _requestHeaders = {'Accept': 'application/json'};
 
   Future<String> getServerIP() async {
-    final prefs = await SharedPreferences.getInstance();
-    String tmpServer = prefs.get("serverIP");
+    String tmpServer = "3.121.234.234";
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt");
+    if (await mgFile.exists()) {
+      _serverIP = await mgFile.readAsString();
+    }
     return tmpServer ?? _serverIP;
   }
 
   Future<bool> loadDrivers() async {
     drivers = [];
-    final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt");
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
-      if (_serverIP == null)
-        _serverIP = prefs.get("serverIP");
+      if (_serverIP == null) _serverIP = await mgFile.readAsString();
 
       final request = await http.get(
           _serverInit + _serverIP + _serverExt + _driversReqUrl,
@@ -61,12 +66,12 @@ class FormDataProvider with ChangeNotifier {
 
   Future<bool> loadLocations() async {
     locations = [];
-    final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt");
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
-      if (_serverIP == null)
-        _serverIP = prefs.get("serverIP");
+      if (_serverIP == null) _serverIP = await mgFile.readAsString();
 
       var request = await http.get(
           _serverInit + _serverIP + _serverExt + _locationsReqUrl,
@@ -93,12 +98,12 @@ class FormDataProvider with ChangeNotifier {
 
   Future<bool> loadModels() async {
     models = [];
-    final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt");
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
-      if (_serverIP == null)
-        _serverIP = prefs.get("serverIP");
+      if (_serverIP == null) _serverIP = await mgFile.readAsString();
 
       var request = await http.get(
           _serverInit + _serverIP + _serverExt + _modelsReqUrl,
@@ -141,12 +146,12 @@ class FormDataProvider with ChangeNotifier {
       startLatt,
       endLong,
       endLatt}) async {
-        final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt");
     try {
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();
-      if (_serverIP == null)
-        _serverIP = prefs.get("serverIP");
+      if (_serverIP == null) _serverIP = await mgFile.readAsString();
       final serverURL = _serverInit + _serverIP + _serverExt;
       final formData = {
         "startLoc": startLocationName,
@@ -204,10 +209,14 @@ class FormDataProvider with ChangeNotifier {
   }
 
   Future<void> initHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
+    final directory = await getApplicationDocumentsDirectory();
+
+    final tokenFile = new File("${directory.path}/token.txt");
+    final typeFile = new File("${directory.path}/userType.txt");
+
     this._requestHeaders.addAll({
-      "token": prefs.get("token"),
-      "userType": prefs.get("userType")
+      "token": tokenFile.readAsStringSync(),
+      "userType": typeFile.readAsStringSync()
     });
   }
 

@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
 import "package:flutter/material.dart";
 import "package:http/http.dart" as http;
-import "package:shared_preferences/shared_preferences.dart";
 
 class Auth with ChangeNotifier {
   final _serverInit = "http://";
-  String _serverIP ;
+  String _serverIP;
   final String _serverExt = "/motorcity/api/";
   final String _login = "managerlogin";
   final String _authToken = "checkauth";
@@ -18,8 +19,11 @@ class Auth with ChangeNotifier {
   }
 
   Future<int> login(String user, String password) async {
-    final prefs = await SharedPreferences.getInstance();
-    _serverIP = prefs.get("serverIP");
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt"); 
+    if(mgFile.existsSync())
+      _serverIP = mgFile.readAsStringSync();
+    else _serverIP = "3.121.234.234";
     String loginIP = (_serverIP) ?? "3.121.234.234";
     try {
       final serverURL = _serverInit + loginIP + _serverExt;
@@ -31,12 +35,17 @@ class Auth with ChangeNotifier {
         var token = decodedJson['token'];
         if (id != null) {
           _isAuthenticated = true;
-          await prefs.setString("userID", id);
-          await prefs.setString("userName", user);
-          await prefs.setString("token", token);
-          await prefs.setString("userType", "manager");
-          await prefs.setString("serverIP","3.121.234.234");
           _serverIP = "3.121.234.234";
+          
+          final idFile = new File("${directory.path}/id.txt");
+          final tokenFile = new File("${directory.path}/token.txt");
+          final userType = new File("${directory.path}/userType.txt");
+          final userName = new File("${directory.path}/userName.txt");
+          mgFile.writeAsString(_serverIP);
+          idFile.writeAsString(id);
+          tokenFile.writeAsString(token);
+          userType.writeAsString("manager");
+          userName.writeAsString(user);
           initHeaders();
           return 1; //Login Success
         } else
@@ -50,36 +59,55 @@ class Auth with ChangeNotifier {
   }
 
   Future<bool> checkToken(token) async {
-    if(_serverIP != null)
-    try {
-      final serverURL = _serverInit + _serverIP + _serverExt;
-      await initHeaders();
-      final response  = await http.post(serverURL + _authToken, headers: _requestHeaders);
-      if(response.statusCode == 200){
-        final cleaned = cleanResponse(response.body);
-        return (json.decode(cleaned)['headers'] ?? false);
-      }
-    }  catch (e){
-    }
-      return false;
+    if (_serverIP != null)
+      try {
+        final serverURL = _serverInit + _serverIP + _serverExt;
+        await initHeaders();
+        final response =
+            await http.post(serverURL + _authToken, headers: _requestHeaders);
+        if (response.statusCode == 200) {
+          final cleaned = cleanResponse(response.body);
+          return (json.decode(cleaned)['headers'] ?? false);
+        }
+      } catch (e) {}
+    return false;
   }
 
   Future<bool> isloggedIn() async {
-    final prefs = await SharedPreferences.getInstance();
-    String id = prefs.get("userID");
-    String token = prefs.get("token");
-    String serverIP = prefs.get("serverIP");
+    final directory = await getApplicationDocumentsDirectory();
+    final mgFile = new File("${directory.path}/mg_server.txt");
+    final idFile = new File("${directory.path}/id.txt");
+    final tokenFile = new File("${directory.path}/token.txt");
+    final userNameFile = new File("${directory.path}/userName.txt");
+    String serverIP;
+    String id;
+    String token;
+    String userName;
+    if ( mgFile.existsSync() && idFile.existsSync() && tokenFile.existsSync() && userNameFile.existsSync()) {
+      serverIP = mgFile.readAsStringSync();
+      id = idFile.readAsStringSync();
+      token = tokenFile.readAsStringSync(); 
+      userName = userNameFile.readAsStringSync();
+    } else return false;
 
-    if (id == null || token == null || serverIP == null) 
-      return false;
+    if (id == null || serverIP == null || token == null || userName == null) return false;
 
     return true;
-
   }
 
   void logout() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.clear();
+    final directory = await getApplicationDocumentsDirectory();
+
+    final tokenFile = new File("${directory.path}/token.txt");
+    final idFile = new File("${directory.path}/id.txt");
+    final typeFile = new File("${directory.path}/userType.txt");
+    final userName = new File("${directory.path}/userName.txt");
+
+    tokenFile.deleteSync();
+    idFile.deleteSync();
+    typeFile.deleteSync();
+    userName.deleteSync();
+    
   }
 
   String cleanResponse(json) {
@@ -91,10 +119,12 @@ class Auth with ChangeNotifier {
   }
 
   Future<void> initHeaders() async {
-    final prefs = await SharedPreferences.getInstance();
-    this._requestHeaders.addAll({
-      "token": prefs.get("token"),
-      "userType": prefs.get("userType")
-    });
+    final directory = await getApplicationDocumentsDirectory();
+
+    final tokenFile = new File("${directory.path}/token.txt");
+    final typeFile = new File("${directory.path}/id.txt");
+
+    this._requestHeaders.addAll(
+        {"token": tokenFile.readAsStringSync(), "userType": typeFile.readAsStringSync()});
   }
 }

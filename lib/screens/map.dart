@@ -12,7 +12,7 @@ import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 //Map Configuration Variables
 const GOOGLE_API_KEY =
-    'AIzaSyDvOMFh-AzpZJP-knXdYq551uNO_19Zp2A<'; //AIzaSyAledESPK4L-85edzOdydEohODjWgqZd2Q
+    'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k'; //AIzaSyAledESPK4L-85edzOdydEohODjWgqZd2Q
 
 GoogleMapController controller;
 

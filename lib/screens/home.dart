@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:motorcity_tracking/screens/history.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:motorcity_tracking/screens/newRequest.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   List<MenuData> menuDataList = [];
 
   _refreshPage(BuildContext context) {
-    return Provider.of<Requests>(context, listen: false).loadRequests(force: true);
+    return Provider.of<Requests>(context, listen: false)
+        .loadRequests(force: true);
   }
 
   @override
@@ -32,16 +34,25 @@ class _HomeScreenState extends State<HomeScreen> {
     menuDataList = [
       //Settings Menu Item
       new MenuData(Icons.refresh, (context, menuData) {
-       _refreshPage(context);
+        _refreshPage(context);
       }, labelText: "Refresh"),
       //New Request Menu Item
       new MenuData(Icons.add_location, (context, menuData) {
-        Navigator.push(context,  PageTransition( child: NewRequestScreen(), type: PageTransitionType.upToDown, duration: Duration(milliseconds: 500)) );
+        Navigator.push(
+            context,
+            PageTransition(
+                child: NewRequestScreen(),
+                type: PageTransitionType.upToDown,
+                duration: Duration(milliseconds: 500)));
       }, labelText: "New Request"),
       //Settings Menu Item
       new MenuData(Icons.settings, (context, menuData) {
         Navigator.of(context).pushNamed(SettingsScreen.routeName);
       }, labelText: "Settings"),
+      //History Menu Item
+      new MenuData(Icons.history, (context, menuData) {
+        Navigator.of(context).pushNamed(HistoryScreen.routeName);
+      }, labelText: "History"),
       //Logout Menu Item
       new MenuData(Icons.lock_outline, (context, menuData) {
         Provider.of<Auth>(context, listen: false).logout();
@@ -77,10 +88,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 : Consumer<Requests>(
                     builder: (context, requestsProv, _) {
                       if (requestsProv.requests.length > 0) {
-                        return ListView(
-                            children: requestsProv.requests.map((tmp) {
-                          return RequestItem(tmp);
-                        }).toList());
+                        return ListView.builder(
+                          itemBuilder: (ctx, index) {
+                            return RequestItem(requestsProv.requests[index]);
+                          },
+                          itemCount: requestsProv.requests.length,
+                        );
                       } else {
                         return SingleChildScrollView(
                           child: Container(

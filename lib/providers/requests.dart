@@ -12,8 +12,10 @@ class Requests with ChangeNotifier {
   final String _serverExt = "/motorcity/api/";
   final String _requestsExt = "requests";
   final String _requestsDet = "request/details";
+  final String _requestsHistory = "request/history";
 
   List<TruckRequest> _requests = [];
+  List<TruckRequest> _history = [];
 
   Map<String, String> _requestHeaders = {'Accept': 'application/json'};
 
@@ -43,6 +45,39 @@ class Requests with ChangeNotifier {
 
   List<TruckRequest> get requests {
     return [..._requests];
+  }
+
+  List<TruckRequest> get history {
+    return [..._history];
+  }
+
+  Future<void> loadHistory() async {
+    if (_history.length == 0) {
+      _history = [];
+      if (_requestHeaders['token'] == null ||
+          _requestHeaders['userType'] == null) await initHeaders();
+      if (_serverIP == null) _serverIP = await getServerIP();
+      var response = await http.post(
+          _serverInit + _serverIP + _serverExt + _requestsHistory,
+          headers: _requestHeaders);
+      if (response.statusCode == 200) {
+        final dynamic cleanRequests = cleanResponse(response.body);
+        if (cleanRequests is Map<String, dynamic> &&
+            cleanRequests.containsKey("headers") &&
+            cleanRequests['headers'] == "false") {
+          return;
+        }
+        final Iterable decoded = json.decode(cleanRequests);
+        decoded.forEach((tmp) {
+          print(tmp);
+          _history.add(TruckRequest.fromJson(tmp));
+        });
+        notifyListeners();
+        return;
+      }
+    } else {
+      return;
+    }
   }
 
   Future<void> loadRequests({force: false}) async {

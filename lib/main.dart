@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:motorcity_tracking/models/notification_handler.dart';
 import 'package:motorcity_tracking/providers/formData.dart';
+import 'package:motorcity_tracking/screens/history.dart';
 import 'package:provider/provider.dart';
 
 import './providers/requests.dart';
@@ -43,6 +44,7 @@ class _MyAppState extends State<MyApp> {
             HomeScreen.routeName: (context) => HomeScreen(),
             NewRequestScreen.routeName: (context) => NewRequestScreen(),
             SettingsScreen.routeName: (context) => SettingsScreen(),
+            HistoryScreen.routeName: (context) => HistoryScreen(),
           },
           theme: ThemeData(
             fontFamily: 'NotoSerif',

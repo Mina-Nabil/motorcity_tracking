@@ -1,4 +1,6 @@
 
+import 'package:motorcity_tracking/providers/distance_time.dart';
+
 class TruckRequest {
   String id;
   String from;
@@ -17,7 +19,8 @@ class TruckRequest {
   double endLong;
   double endLatt;
   String driverID;
-
+  double timeSec;
+  double distanceMeter;
 
   TruckRequest({id, from, to, reqDate, startDate, chassis, model, km, status, comment, startLong, startLatt, endLong, endLatt,driverName}) {
     this.id = id ?? "0";
@@ -56,6 +59,8 @@ class TruckRequest {
     this.startLatt = double.parse(response['TKRQ_STRT_LATT']) ?? 0;
     this.endLong = double.parse(response['TKRQ_END_LONG']) ?? 0;
     this.endLatt = double.parse(response['TKRQ_END_LATT']) ?? 0;
+    print("Test");
+    print("${GoogleDistanceTime.getResponse(startLatt, startLong, endLatt, endLong)}");
     } catch (e){
       return;
     }

@@ -12,8 +12,9 @@ import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 //Map Configuration Variables
 const GOOGLE_API_KEY =
-    'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k'; //AIzaSyAledESPK4L-85edzOdydEohODjWgqZd2Q
-
+    'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k'; 
+const DISTANCE_TIME_GOOGLE_API_KEY =
+    'AIzaSyAN3Ba5-MW6y8g2eyL57Ls9IFDDC9mwf8E';
 GoogleMapController controller;
 
 //Request Variables

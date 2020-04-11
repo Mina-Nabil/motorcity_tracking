@@ -85,7 +85,7 @@ class TruckRequest {
       this.distanceStr = "N/A";
       this.timeStr = "N/A";
       print("$startLatt - $startLong : $endLatt - $endLong");
-      fillTimeDistance();
+      //fillTimeDistance();
     } catch (e) {
       return;
     }

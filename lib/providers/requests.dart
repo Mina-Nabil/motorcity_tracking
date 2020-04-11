@@ -139,7 +139,7 @@ class Requests with ChangeNotifier {
     });
   }
 
-  String cleanResponse(json) {
+  static String cleanResponse(json) {
     int shitIndex = json.indexOf("<script");
     if (shitIndex > 0)
       return json.substring(0, shitIndex);

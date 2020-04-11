@@ -90,7 +90,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       if (requestsProv.requests.length > 0) {
                         return ListView.builder(
                           itemBuilder: (ctx, index) {
-                            return RequestItem(requestsProv.requests[index]);
+                            return new RequestItem(requestsProv.requests[index]);
                           },
                           itemCount: requestsProv.requests.length,
                         );

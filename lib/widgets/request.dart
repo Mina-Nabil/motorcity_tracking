@@ -6,7 +6,6 @@ import '../screens/map.dart';
 
 class RequestItem extends StatefulWidget {
   final TruckRequest req;
-
   RequestItem(this.req);
 
   @override
@@ -14,18 +13,6 @@ class RequestItem extends StatefulWidget {
 }
 
 class _RequestItemState extends State<RequestItem> {
-
-  bool isLoaded = false;
-
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    await widget.req.fillTimeDistance();
-    setState(() {
-      isLoaded = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -184,23 +171,32 @@ class _RequestItemState extends State<RequestItem> {
                       Row(
                         children: <Widget>[
                           Expanded(
-                            child: Container(
-                                padding: EdgeInsets.only(top: 5),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  (isLoaded) ? '${widget.req.distanceStr}' : "Loading..",
-                                  style: TextStyle(fontSize: 16),
-                                )),
+                            child: ValueListenableBuilder(
+                              valueListenable: widget.req.distanceStr,
+                              builder: (context, value, child) {
+                                return Container(
+                                    padding: EdgeInsets.only(top: 5),
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                      '${widget.req.distanceStr.value}',
+                                      style: TextStyle(fontSize: 16),
+                                    ));
+                              },
+                            ),
                           ),
                           Expanded(
-                            child: Container(
-                                padding: EdgeInsets.only(top: 5),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  (isLoaded) ?  '${widget.req.timeStr}' :  "Loading..",
-                                  style: TextStyle(fontSize: 16),
-                                )),
-                          )
+                              child: ValueListenableBuilder(
+                            valueListenable: widget.req.distanceStr,
+                            builder: (context, value, child) {
+                              return Container(
+                                  padding: EdgeInsets.only(top: 5),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '${widget.req.timeStr.value}',
+                                    style: TextStyle(fontSize: 16),
+                                  ));
+                            },
+                          ))
                         ],
                       ),
                     ],

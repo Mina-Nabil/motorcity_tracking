@@ -11,10 +11,8 @@ import 'package:motorcity_tracking/models/truckrequest.dart';
 import 'package:solid_bottom_sheet/solid_bottom_sheet.dart';
 
 //Map Configuration Variables
-const GOOGLE_API_KEY =
-    'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k'; 
-const DISTANCE_TIME_GOOGLE_API_KEY =
-    'AIzaSyAN3Ba5-MW6y8g2eyL57Ls9IFDDC9mwf8E';
+const GOOGLE_API_KEY = 'AIzaSyBr2lVmpumJPZLCk3VffDODha5TPZ_4H9k';
+const DISTANCE_TIME_GOOGLE_API_KEY = 'AIzaSyAN3Ba5-MW6y8g2eyL57Ls9IFDDC9mwf8E';
 GoogleMapController controller;
 
 //Request Variables
@@ -39,6 +37,7 @@ Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
 //bottom sheet flag
 bool _bottomSheetVisible = false;
+bool firstOpen = true;
 
 class MapScreen extends StatefulWidget {
   static String routeName = "MapScreen";
@@ -123,7 +122,8 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
   void setMarkers() async {
     //Initializing Request Object
     //_id = ModalRoute.of(context).settings.arguments;
-    _truckRequest = await Provider.of<Requests>(context, listen: false).getFullRequest(_id);
+    _truckRequest =
+        await Provider.of<Requests>(context, listen: false).getFullRequest(_id);
     if (_truckRequest != null) {
       _driverID = _truckRequest.driverID;
       intializeTruckMarker();
@@ -251,6 +251,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         Marker truckMarker2 =
             truckMarker.copyWith(positionParam: truckMarkerPosition);
         if (mounted) {
+          updateDistanceAndTime(truckLat, truckLng);
           setState(() {
             markers[truckMarkerID] = truckMarker2;
           });
@@ -272,6 +273,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
         Marker truckMarker2 =
             truckMarker.copyWith(positionParam: truckMarkerPosition);
         if (mounted) {
+          updateDistanceAndTime(truckLat, truckLng);
           setState(() {
             markers[truckMarkerID] = truckMarker2;
           });
@@ -280,9 +282,19 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
     });
   }
 
+  void updateDistanceAndTime(double truckLat, double truckLng) {
+    if (_bottomSheetVisible && firstOpen) {
+      if (truckLat != 0 && truckLng != 0) {
+        _truckRequest.fillTimeDistance(truckLat, truckLng);
+        firstOpen = false;
+      }
+    }
+  }
+
   //build bottom sheet
   void showBottomSheet() {
     _bottomSheetVisible = true;
+    firstOpen = true;
   }
 
   void hideBottomSheet() {
@@ -340,7 +352,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    flex: 3,
+                    flex: 2,
                     child: Align(
                       alignment: Alignment.centerRight,
                       child: Icon(
@@ -422,6 +434,7 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                         child: Icon(
                           Icons.directions_car,
                           size: 40,
+                          color: Color.fromRGBO(3, 45, 69, .9),
                         ),
                       ),
                     ),
@@ -433,7 +446,89 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-            )
+            ),
+            Row(
+              children: <Widget>[
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Icon(
+                          Icons.timer,
+                          size: 40,
+                          color: Color.fromRGBO(3, 45, 69, .9),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: ValueListenableBuilder(
+                          valueListenable: _truckRequest.timeStr,
+                          builder: (context, value, child) {
+                            return Container(
+                                padding: EdgeInsets.only(top: 5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${_truckRequest.timeStr.value}',
+                                  style: TextStyle(fontSize: 16),
+                                ));
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Expanded(
+                  flex: 1,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 1,
+                        child: Icon(
+                          Icons.straighten,
+                          size: 40,
+                          color: Color.fromRGBO(3, 45, 69, .9),
+                        ),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: ValueListenableBuilder(
+                          valueListenable: _truckRequest.distanceStr,
+                          builder: (context, value, child) {
+                            return Container(
+                                padding: EdgeInsets.only(top: 5),
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  '${_truckRequest.distanceStr.value}',
+                                  style: TextStyle(fontSize: 16),
+                                ));
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                // Expanded(
+                //   flex: 1,
+                //   child: Expanded(
+                //     flex: 1,
+                //     child: ValueListenableBuilder(
+                //       valueListenable: _truckRequest.distanceStr,
+                //       builder: (context, value, child) {
+                //         return Container(
+                //             padding: EdgeInsets.only(top: 5),
+                //             alignment: Alignment.centerLeft,
+                //             child: Text(
+                //               '${_truckRequest.timeStr.value}',
+                //               style: TextStyle(fontSize: 16),
+                //             ));
+                //       },
+                //     ),
+                //   ),
+                // )
+              ],
+            ),
           ]),
         ),
       ),

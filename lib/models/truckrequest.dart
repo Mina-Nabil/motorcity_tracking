@@ -23,8 +23,8 @@ class TruckRequest {
   double endLong;
   double endLatt;
   String driverID;
-  ValueNotifier timeStr= new ValueNotifier("N/A");
-  ValueNotifier distanceStr= new ValueNotifier("N/A");
+  ValueNotifier timeStr = new ValueNotifier("N/A");
+  ValueNotifier distanceStr = new ValueNotifier("N/A");
 
   TruckRequest(
       {id,
@@ -64,7 +64,6 @@ class TruckRequest {
 
   TruckRequest.fromJson(Map<String, dynamic> response) {
     try {
-      print("A");
       this.id = response['TKRQ_ID'];
       this.from = response['TKRQ_STRT_LOC'] ?? "N/A";
       this.to = response['TKRQ_END_LOC'] ?? "N/A";
@@ -77,33 +76,39 @@ class TruckRequest {
       this.status = response['TKRQ_STTS'] ?? "N/A";
       this.driverName = response['DRVR_NAME'] ?? "N/A";
       this.driverID = response['DRVR_ID'] ?? "N/A";
-      this.startLong = (response['TKRQ_STRT_LONG'] != null) ?  double.parse(response['TKRQ_STRT_LONG']) : 0;
-      this.startLatt = (response['TKRQ_STRT_LATT']!= null) ?  double.parse(response['TKRQ_STRT_LATT']) : 0;
-      this.endLong = (response['TKRQ_END_LONG']!= null) ?  double.parse(response['TKRQ_END_LONG']) : 0;
-      this.endLatt =(response['TKRQ_END_LATT']!= null) ?   double.parse(response['TKRQ_END_LATT']) : 0;
-      if(this.startLong != 0 && this.startLatt!=0 && this.endLatt != 0 && this.endLong != 0)
-        fillTimeDistance();
+      this.startLong = (response['TKRQ_STRT_LONG'] != null)
+          ? double.parse(response['TKRQ_STRT_LONG'])
+          : 0;
+      this.startLatt = (response['TKRQ_STRT_LATT'] != null)
+          ? double.parse(response['TKRQ_STRT_LATT'])
+          : 0;
+      this.endLong = (response['TKRQ_END_LONG'] != null)
+          ? double.parse(response['TKRQ_END_LONG'])
+          : 0;
+      this.endLatt = (response['TKRQ_END_LATT'] != null)
+          ? double.parse(response['TKRQ_END_LATT'])
+          : 0;
     } catch (e) {
       return;
     }
   }
 
-  Future<void> fillTimeDistance() async {
-    dynamic distanceTimeReqBodyJson;
-    await GoogleDistanceTime.getResponse(startLatt, startLong, endLatt, endLong)
-        .then((value) {
-      if (value != "") {
-        String cleanValue = Requests.cleanResponse(value);
-        distanceTimeReqBodyJson = jsonDecode(cleanValue);
+  Future<void> fillTimeDistance(double truckLatt, double truckLong) async {
+    if (truckLatt != 0 && truckLong != 0 && endLatt != 0 && endLong != 0) {
+      dynamic distanceTimeReqBodyJson;
+      await GoogleDistanceTime.getResponse(
+              truckLatt, truckLong, endLatt, endLong)
+          .then((value) {
+        if (value != "") {
+          String cleanValue = Requests.cleanResponse(value);
+          distanceTimeReqBodyJson = jsonDecode(cleanValue);
 
-        this.timeStr.value = distanceTimeReqBodyJson["rows"][0]["elements"][0]
-            ["distance"]["text"];
-        this.distanceStr.value = distanceTimeReqBodyJson["rows"][0]["elements"][0]
-            ["duration"]["text"];
-
-        print("Time : ${this.timeStr.value}");
-        print("Distance : ${this.distanceStr.value}");
-      }
-    });
+          this.timeStr.value = distanceTimeReqBodyJson["rows"][0]["elements"][0]
+              ["duration"]["text"];
+          this.distanceStr.value = distanceTimeReqBodyJson["rows"][0]
+              ["elements"][0]["distance"]["text"];
+        }
+      });
+    }
   }
 }

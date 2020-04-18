@@ -168,37 +168,7 @@ class _RequestItemState extends State<RequestItem> {
                           )
                         ],
                       ),
-                      Row(
-                        children: <Widget>[
-                          Expanded(
-                            child: ValueListenableBuilder(
-                              valueListenable: widget.req.distanceStr,
-                              builder: (context, value, child) {
-                                return Container(
-                                    padding: EdgeInsets.only(top: 5),
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      '${widget.req.distanceStr.value}',
-                                      style: TextStyle(fontSize: 16),
-                                    ));
-                              },
-                            ),
-                          ),
-                          Expanded(
-                              child: ValueListenableBuilder(
-                            valueListenable: widget.req.distanceStr,
-                            builder: (context, value, child) {
-                              return Container(
-                                  padding: EdgeInsets.only(top: 5),
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    '${widget.req.timeStr.value}',
-                                    style: TextStyle(fontSize: 16),
-                                  ));
-                            },
-                          ))
-                        ],
-                      ),
+                      
                     ],
                   ),
                 ),

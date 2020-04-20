@@ -14,7 +14,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   _refreshPage(BuildContext context) {
-    return Provider.of<Requests>(context, listen: false).loadHistory();
+    return Provider.of<Requests>(context).loadHistory();
   }
 
   @override
@@ -38,7 +38,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                 ? CircularProgressIndicator()
                 : Consumer<Requests>(
                     builder: (context, requestsProv, _) {
-                      if (requestsProv.requests.length > 0) {
+                      if (requestsProv.history.length > 0) {
                         return ListView.builder(
                           itemBuilder: (ctx, index) {
                             return RequestItem(requestsProv.history[index]);

@@ -14,13 +14,16 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   _refreshPage(BuildContext context) {
-    return Provider.of<Requests>(context).loadHistory();
+    return Provider.of<Requests>(context,listen: false).loadHistory(force: true);
   }
 
   @override
   void didChangeDependencies() async {
-    await Provider.of<Requests>(context).loadHistory();
-    _isLoading = false;
+    await Provider.of<Requests>(context,listen: false).loadHistory();
+    setState(() {
+      _isLoading = false;
+    });
+    
     super.didChangeDependencies();
   }
 

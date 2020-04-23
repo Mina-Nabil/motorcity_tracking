@@ -51,8 +51,8 @@ class Requests with ChangeNotifier {
     return [..._history];
   }
 
-  Future<void> loadHistory() async {
-    if (_history.length == 0) {
+  Future<void> loadHistory({force: false}) async {
+    if (force || _history.length == 0) {
       _history = [];
       if (_requestHeaders['token'] == null ||
           _requestHeaders['userType'] == null) await initHeaders();

@@ -44,7 +44,13 @@ class _RequestItemState extends State<RequestItem> {
                   fit: FlexFit.loose,
                   child: Image.asset((widget.req.status == '1')
                       ? "assets/images/new.png"
-                      : "assets/images/in-progress.png"),
+                      :(widget.req.status == '2') 
+                      ? "assets/images/in-progress.png"
+                      :(widget.req.status == '3') 
+                      ? "assets/images/checked.png"
+                      :(widget.req.status == '5') 
+                      ? "assets/images/canceled.png"
+                      : "assets/images/in-progress.png"  ),
                 ),
                 Flexible(
                   flex: 8,

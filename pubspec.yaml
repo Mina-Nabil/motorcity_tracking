@@ -113,6 +113,10 @@ flutter:
     - assets/images/Motorcity-Logo-trns-blue2.png
     - assets/images/Motorcity-Logo-wht-blue.png
     - assets/images/Motorcity-Logo-wht-blue2.png
+    - assets/images/canceled.png
+    - assets/images/checked.png
+    
+
 
   fonts:
   - family: NotoSerif

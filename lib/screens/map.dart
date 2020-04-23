@@ -447,87 +447,90 @@ class MapScreenState extends State<MapScreen> with TickerProviderStateMixin {
                 ),
               ),
             ),
-            Row(
-              children: <Widget>[
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Icon(
-                          Icons.timer,
-                          size: 40,
-                          color: Color.fromRGBO(3, 45, 69, .9),
+           
+            Expanded(
+                          child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 1,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Icon(
+                            Icons.timer,
+                            size: 40,
+                            color: Color.fromRGBO(3, 45, 69, .9),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: ValueListenableBuilder(
-                          valueListenable: _truckRequest.timeStr,
-                          builder: (context, value, child) {
-                            return Container(
-                                padding: EdgeInsets.only(top: 5),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  '${_truckRequest.timeStr.value}',
-                                  style: TextStyle(fontSize: 16),
-                                ));
-                          },
-                        ),
-                      )
-                    ],
+                        Expanded(
+                          flex: 2,
+                          child: ValueListenableBuilder(
+                            valueListenable: _truckRequest.timeStr,
+                            builder: (context, value, child) {
+                              return Container(
+                                  padding: EdgeInsets.only(top: 5),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '${_truckRequest.timeStr.value}',
+                                    style: TextStyle(fontSize: 16),
+                                  ));
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  flex: 1,
-                  child: Row(
-                    children: <Widget>[
-                      Expanded(
-                        flex: 1,
-                        child: Icon(
-                          Icons.straighten,
-                          size: 40,
-                          color: Color.fromRGBO(3, 45, 69, .9),
+                  Expanded(
+                    flex: 1,
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                          flex: 1,
+                          child: Icon(
+                            Icons.straighten,
+                            size: 40,
+                            color: Color.fromRGBO(3, 45, 69, .9),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        flex: 2,
-                        child: ValueListenableBuilder(
-                          valueListenable: _truckRequest.distanceStr,
-                          builder: (context, value, child) {
-                            return Container(
-                                padding: EdgeInsets.only(top: 5),
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  '${_truckRequest.distanceStr.value}',
-                                  style: TextStyle(fontSize: 16),
-                                ));
-                          },
-                        ),
-                      )
-                    ],
+                        Expanded(
+                          flex: 2,
+                          child: ValueListenableBuilder(
+                            valueListenable: _truckRequest.distanceStr,
+                            builder: (context, value, child) {
+                              return Container(
+                                  padding: EdgeInsets.only(top: 5),
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '${_truckRequest.distanceStr.value}',
+                                    style: TextStyle(fontSize: 16),
+                                  ));
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-                // Expanded(
-                //   flex: 1,
-                //   child: Expanded(
-                //     flex: 1,
-                //     child: ValueListenableBuilder(
-                //       valueListenable: _truckRequest.distanceStr,
-                //       builder: (context, value, child) {
-                //         return Container(
-                //             padding: EdgeInsets.only(top: 5),
-                //             alignment: Alignment.centerLeft,
-                //             child: Text(
-                //               '${_truckRequest.timeStr.value}',
-                //               style: TextStyle(fontSize: 16),
-                //             ));
-                //       },
-                //     ),
-                //   ),
-                // )
-              ],
+                  // Expanded(
+                  //   flex: 1,
+                  //   child: Expanded(
+                  //     flex: 1,
+                  //     child: ValueListenableBuilder(
+                  //       valueListenable: _truckRequest.distanceStr,
+                  //       builder: (context, value, child) {
+                  //         return Container(
+                  //             padding: EdgeInsets.only(top: 5),
+                  //             alignment: Alignment.centerLeft,
+                  //             child: Text(
+                  //               '${_truckRequest.timeStr.value}',
+                  //               style: TextStyle(fontSize: 16),
+                  //             ));
+                  //       },
+                  //     ),
+                  //   ),
+                  // )
+                ],
+              ),
             ),
           ]),
         ),

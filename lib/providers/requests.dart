@@ -69,7 +69,6 @@ class Requests with ChangeNotifier {
         }
         final Iterable decoded = json.decode(cleanRequests);
         decoded.forEach((tmp) {
-          print(tmp);
           _history.add(TruckRequest.fromJson(tmp));
         });
         notifyListeners();

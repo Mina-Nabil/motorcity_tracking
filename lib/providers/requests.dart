@@ -20,13 +20,13 @@ class Requests with ChangeNotifier {
   Map<String, String> _requestHeaders = {'Accept': 'application/json'};
 
   Future<String> getServerIP() async {
-    String tmpServer = "3.121.234.234";
+    String tmpServer = "3.126.32.172";
     final directory = await getApplicationDocumentsDirectory();
     final mgFile = new File("${directory.path}/mg_server.txt");
     if (await mgFile.exists()) {
       _serverIP = await mgFile.readAsString();
     }
-    return tmpServer ?? _serverIP;
+    return _serverIP ?? tmpServer;
   }
 
   Future<void> setServerIP(newIP) async {

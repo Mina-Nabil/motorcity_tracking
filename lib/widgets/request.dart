@@ -27,10 +27,14 @@ class _RequestItemState extends State<RequestItem> {
                     child: MapScreen(widget.req.id),
                     type: PageTransitionType.leftToRight,
                     duration: Duration(milliseconds: 600)));
-          } else {
+          } else if (widget.req.status == '1') {
             Scaffold.of(context).showSnackBar(new SnackBar(
                 content: new Text(
                     "Oops! No driver data available, Request is new.")));
+          } else {
+            Scaffold.of(context).showSnackBar(new SnackBar(
+                content: new Text(
+                    "Old Request! Can't open request details")));
           }
         },
         child: Container(

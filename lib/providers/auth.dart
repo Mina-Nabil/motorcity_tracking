@@ -23,8 +23,8 @@ class Auth with ChangeNotifier {
     final mgFile = new File("${directory.path}/mg_server.txt"); 
     if(mgFile.existsSync())
       _serverIP = mgFile.readAsStringSync();
-    else _serverIP = "3.121.234.234";
-    String loginIP = (_serverIP) ?? "3.121.234.234";
+    else _serverIP = "3.126.32.172";
+    String loginIP = (_serverIP) ?? "3.126.32.172";
     try {
       final serverURL = _serverInit + loginIP + _serverExt;
       final response = await http.post(serverURL + _login,
@@ -35,7 +35,7 @@ class Auth with ChangeNotifier {
         var token = decodedJson['token'];
         if (id != null) {
           _isAuthenticated = true;
-          _serverIP = "3.121.234.234";
+          _serverIP = "3.126.32.172";
           
           final idFile = new File("${directory.path}/id.txt");
           final tokenFile = new File("${directory.path}/token.txt");

@@ -10,7 +10,7 @@ import "package:http/http.dart" as http;
 
 class FormDataProvider with ChangeNotifier {
   static final String _serverInit = "http://";
-  static String _serverIP = "3.121.234.234";
+  static String _serverIP = "3.126.32.172";
   static String _serverExt = "/motorcity/api/";
   static final String _driversReqUrl = 'get/drivers';
   static final String _locationsReqUrl = 'locations';
@@ -26,13 +26,13 @@ class FormDataProvider with ChangeNotifier {
   Map<String, String> _requestHeaders = {'Accept': 'application/json'};
 
   Future<String> getServerIP() async {
-    String tmpServer = "3.121.234.234";
+    String tmpServer = "3.126.32.172";
     final directory = await getApplicationDocumentsDirectory();
     final mgFile = new File("${directory.path}/mg_server.txt");
     if (await mgFile.exists()) {
       _serverIP = await mgFile.readAsString();
     }
-    return tmpServer ?? _serverIP;
+    return _serverIP ?? tmpServer;
   }
 
   Future<bool> loadDrivers() async {
